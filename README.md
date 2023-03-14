@@ -1,7 +1,7 @@
 [![Snakemake](https://img.shields.io/badge/snakemake-≥7.24.0-brightgreen.svg)](https://snakemake.github.io)
 ![release](https://img.shields.io/github/v/release/sebastian-gregoricchio/ChIP_Zwart)
-[![license](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://sebastian-gregoricchio.github.io/Rseb/LICENSE.md/LICENSE)
-[![forks](https://img.shields.io/github/forks/sebastian-gregoricchio/snakeATAC?style=social)](https://github.com/sebastian-gregoricchio/ChIP_Zwart/fork)
+[![license](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/sebastian-gregoricchio/ChIP_Zwart/LICENSE.md/LICENSE.md)
+[![forks](https://img.shields.io/github/forks/sebastian-gregoricchio/ChIP_Zwart?style=social)](https://github.com/sebastian-gregoricchio/ChIP_Zwart/fork)
 <!-- ![update](https://badges.pufler.dev/updated/sebastian-gregoricchio/ChIP_Zwart)
 ![visits](https://badges.pufler.dev/visits/sebastian-gregoricchio/ChIP_Zwart) --->
 
@@ -232,7 +232,7 @@ Here an example directory tree:
 
 -----------------
 ## Package history and releases
-A list of all releases and respective description of changes applied could be found [here](https://sebastian-gregoricchio.github.io/ChIP_Zwart/NEWS).
+A list of all releases and respective description of changes applied could be found [here](https://github.com/sebastian-gregoricchio/ChIP_Zwart/blob/main/NEWS.md).
 
 ## Contact
 For any suggestion, bug fixing, commentary please report it in the [issues](https://github.com/sebastian-gregoricchio/ChIP_Zwart/issues)/[request](https://github.com/sebastian-gregoricchio/ChIP_Zwart/pulls) tab of this repository.
