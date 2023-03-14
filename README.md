@@ -132,10 +132,13 @@ Notice that the absence of errors does not mean that the pipeline will run witho
 #### Peak calling workflow
 Here after you can see the full potential workflow of the paired-end and single-end ChIP-seq pipeline:
 
-**PAIRED-END**
-![PE workflow](https://raw.githubusercontent.com/sebastian-gregoricchio/ChIP_Zwart/main/resources/peakcalling_workflow_PE.png)
+**a) PAIRED-END**
+![PE workflow](https://raw.githubusercontent.com/sebastian-gregoricchio/
+  ChIP_Zwart/main/resources/peakcalling_workflow_PE.png)
 
-**SINGLE-END**
+<br/><br/>
+
+**b) SINGLE-END**
 ![PE workflow](https://raw.githubusercontent.com/sebastian-gregoricchio/ChIP_Zwart/main/resources/peakcalling_workflow_SE.png)
 
 <br/><br/>
@@ -236,7 +239,7 @@ A list of all releases and respective description of changes applied could be fo
 For any suggestion, bug fixing, commentary please report it in the [issues](https://github.com/sebastian-gregoricchio/ChIP_Zwart/issues)/[request](https://github.com/sebastian-gregoricchio/ChIP_Zwart/pulls) tab of this repository.
 
 ## License
-This repository is under a [GNU General Public License (version 3)](https://sebastian-gregoricchio.github.io/Rseb/LICENSE.md/LICENSE).
+This repository is under a [GNU General Public License (version 3)](https://github.com/sebastian-gregoricchio/ChIP_Zwart/blob/main/LICENSE.md/LICENSE.md).
 
 <br/>
 
