@@ -1,0 +1,32 @@
+# This .yaml cofinguration file contains all variables used by the snakemake pipeline
+# DO NOT CHANGE parameter names without changing it in Snakefile as well
+# On the other hand, some parameter values have to be inevitably modifed
+# **********************************************************************************************************************************
+
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+### 0. General workflow parameters
+runs_directory:
+output_directory:
+sample_config_table:
+genome:
+umi_present:
+paired_end:
+bam_suffix: ".bam"
+
+### 1. BAM filtering
+remove_duplicates: False
+MAPQ_threshold: 20
+
+### 2. BigWig generation and normalizatioon
+bigWig_binSize: 10
+
+### 3. Peak calling
+use_macs3: False
+macs_qValue_cutoff: 0.01
+
+### 4. Quality check
+perform_plotFingerprint: False
+perform_fragmentSizeDistribution: False
+fragment_length: 200
+correlation_heatmap_colorMap: 'PuBuGn'
