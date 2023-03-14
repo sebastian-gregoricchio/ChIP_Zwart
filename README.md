@@ -132,11 +132,11 @@ Notice that the absence of errors does not mean that the pipeline will run witho
 #### Peak calling workflow
 Here after you can see the full potential workflow of the paired-end and single-end ChIP-seq pipeline:
 
-**PAIRED-END***
-![PE workflow](https://sebastian-gregoricchio.github.io/ChIP_Zwart/resources/peakcalling_workflow_PE.tif)
+**PAIRED-END**
+![PE workflow](https://sebastian-gregoricchio.github.io/ChIP_Zwart/resources/peakcalling_workflow_PE.png)
 
-**SINGLE-END***
-![PE workflow](https://sebastian-gregoricchio.github.io/ChIP_Zwart/resources/peakcalling_workflow_SE.tif)
+**SINGLE-END**
+![PE workflow](https://sebastian-gregoricchio.github.io/ChIP_Zwart/resources/peakcalling_workflow_SE.png)
 
 <br/><br/>
 
@@ -161,7 +161,7 @@ Here an example directory tree:
 │   │   └── <em>sample</em>_mapq20_mdup_sorted_flagstat.txt
 |   ├── <b>MarkDuplicates_metrics</b>
 │   │   └── <em>sample</em>_MarkDuplicates_metrics.txt
-│   ├── <b>umi_metrics</b>  ### (if UMI present) ##
+│   └── <b>umi_metrics</b>  ### (if UMI present) ##
 │       └── <em>sample</em>_UMI_metrics.txt
 |
 ├── <b>02_fastQC_on_BAM_filtered</b>
@@ -207,6 +207,7 @@ Here an example directory tree:
 </pre>
 
 
+<br/><br/>
 
 #### Peak calling config file
 
