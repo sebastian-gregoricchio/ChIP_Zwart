@@ -149,7 +149,7 @@ The results structure is the following:
 * *01_BAM_filtered* -> bams filtered for mapping quality (MAPQ) and with the duplicates marked/removed
 * *02_fastQC_on_BAM_filtered* -> individual fastQC for each filtered bam
 * *03_bigWig_bamCoverage* -> bigWig of the bam coverage normalized ([RCPG](https://deeptools.readthedocs.io/en/develop/content/help_glossary.html?highlight=RPGC#abbreviations) = Reads Per Genomic Content) or not (raw_coverage) depending on the sequencing depth
-* *04_Called_peaks* -> peaks called with macs (de-blacklisted). If single-end also a folder with the output of (`phantompeakqualtools`)[https://www.encodeproject.org/software/phantompeakqualtools/]. If the bed file does not contain already the 'chr' for the "canonical" chromosomes, it will be added in a separated file
+* *04_Called_peaks* -> peaks called with macs (de-blacklisted). If single-end also a folder with the output of [`phantompeakqualtools`](https://www.encodeproject.org/software/phantompeakqualtools/). If the bed file does not contain already the 'chr' for the "canonical" chromosomes, it will be added in a separated file
 * *05_Quality_controls_and_statistics* -> this folder contains sample correlations heatmaps and PCAs, a multiQC report containing multiple info (number of reads, duplicates, peak counts and fragmenth lenght, phantom results), statistics on the called peaks (FRiP, number, etc.)
 
 
