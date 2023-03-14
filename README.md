@@ -133,10 +133,10 @@ Notice that the absence of errors does not mean that the pipeline will run witho
 Here after you can see the full potential workflow of the paired-end and single-end ChIP-seq pipeline:
 
 **PAIRED-END**
-![PE workflow](https://sebastian-gregoricchio.github.io/ChIP_Zwart/resources/peakcalling_workflow_PE.png)
+![PE workflow](https://github.com/sebastian-gregoricchio/ChIP_Zwart/resources/peakcalling_workflow_PE.png)
 
 **SINGLE-END**
-![PE workflow](https://sebastian-gregoricchio.github.io/ChIP_Zwart/resources/peakcalling_workflow_SE.png)
+![PE workflow](https://github.com/sebastian-gregoricchio/ChIP_Zwart/resources/peakcalling_workflow_SE.png)
 
 <br/><br/>
 
