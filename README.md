@@ -92,7 +92,7 @@ Notice that the absence of errors does not mean that the pipeline will run witho
 <br/><br/>
 
 
-#### Peak calling workflow
+#### DNA-mapping workflow
 Here after you can see the full potential workflow of the single-end and paired-end DNA-mapping pipeline:
 
 ![DNA mapping workflow](https://raw.githubusercontent.com/sebastian-gregoricchio/ChIP_Zwart/main/resources/DNAmapping_workflow_SE.PE.png)
@@ -100,7 +100,7 @@ Here after you can see the full potential workflow of the single-end and paired-
 
 <br/><br/>
 
-#### Peak calling results
+#### DNA-mapping results
 The results structure is the following:
 * *01_trimmed_fastq* -> fastq.gz files that underwent trimming by cutadapt
 * *02_BAM* -> mapped reads (bam) filtered for MAPQ, mate-fixed, duplicates marked and eventually UMI-fixed
