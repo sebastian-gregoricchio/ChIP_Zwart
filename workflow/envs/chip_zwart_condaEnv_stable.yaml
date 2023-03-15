@@ -79,6 +79,7 @@ dependencies:
   - contourpy=1.0.5=py38hdb19cb5_0
   - cryptography=38.0.4=py38h9ce1e76_0
   - curl=7.88.1=h5eee18b_0
+  - cutadapt=4.2=py38hbff2b2d_0
   - cycler=0.11.0=pyhd3eb1b0_0
   - cykhash=2.0.1=py38h8dc9893_1
   - cython=0.29.32=py38h6a678d5_0
@@ -88,6 +89,7 @@ dependencies:
   - deeptools=3.5.1=pyhdfd78af_1
   - deeptoolsintervals=0.1.9=py38hbff2b2d_4
   - defusedxml=0.7.1=pyhd3eb1b0_0
+  - dnaio=0.10.0=py38hbff2b2d_0
   - docutils=0.18.1=py38h06a4308_3
   - dpath=2.1.4=py38h578d9bd_0
   - dropbox=11.14.0=py38h06a4308_0
@@ -139,6 +141,7 @@ dependencies:
   - importlib_metadata=4.11.3=hd3eb1b0_0
   - importlib_resources=5.2.0=pyhd3eb1b0_1
   - iniconfig=1.1.1=pyhd3eb1b0_0
+  - isa-l=2.30.0=ha770c72_4
   - jinja2=3.1.2=py38h06a4308_0
   - jmespath=0.10.0=pyhd3eb1b0_0
   - jpeg=9e=h5eee18b_1
@@ -211,11 +214,13 @@ dependencies:
   - pandas=1.5.2=py38h417a72b_0
   - pango=1.50.7=h05da053_0
   - paramiko=2.8.1=pyhd3eb1b0_0
+  - pbzip2=1.1.13=0
   - pcre=8.45=h295c915_0
   - pcre2=10.37=he7ceb23_1
   - peppy=0.35.4=pyhd8ed1ab_0
   - perl=5.34.0=h5eee18b_2
   - phantompeakqualtools=1.2.2=hdfd78af_1
+  - pigz=2.6=h27cfd23_0
   - pillow=9.3.0=py38h6a678d5_2
   - pip=22.3.1=py38h06a4308_0
   - pixman=0.40.0=h7f8727e_1
@@ -250,6 +255,7 @@ dependencies:
   - python-dateutil=2.8.2=pyhd3eb1b0_0
   - python-fastjsonschema=2.16.2=py38h06a4308_0
   - python-irodsclient=1.1.6=pyhd8ed1ab_0
+  - python-isal=1.1.0=py38h0a891b7_1
   - python_abi=3.8=2_cp38
   - pytz=2022.7=py38h06a4308_0
   - pyyaml=6.0=py38h5eee18b_1
@@ -325,6 +331,7 @@ dependencies:
   - wheel=0.37.1=pyhd3eb1b0_0
   - wrapt=1.14.1=py38h5eee18b_0
   - xmltodict=0.12.0=pyhd3eb1b0_0
+  - xopen=1.7.0=py38h578d9bd_1
   - xz=5.2.10=h5eee18b_1
   - yaml=0.2.5=h7b6447c_0
   - yarl=1.8.1=py38h5eee18b_0
@@ -332,6 +339,7 @@ dependencies:
   - yte=1.5.1=py38h578d9bd_1
   - zipp=3.11.0=py38h06a4308_0
   - zlib=1.2.13=h166bdaf_4
+  - zstandard=0.18.0=py38h5eee18b_0
   - zstd=1.5.2=ha4553b6_0
   - pip:
       - click==8.1.3
