@@ -42,8 +42,52 @@ Hereafter, the running commands for DNA-mapping and ChIP-seq peak calling will b
 
 
 ### DNA-mapping
-[... in progress ...]
+This short pipeline performs the mapping into a reference genome upon trimming of the raw fastq reads by [cutadapt](https://cutadapt.readthedocs.io/en/stable/). Further, a filter on the mapping quality (MAPQ) is applied and duplicated reads are marked. Notice that in the case of paired-end reads, when present, UMIs (Unique Molecule Identifiers) sequence is added to the indexes ones in the read name. This is allows the marking of the duplicated reads in a UMI-aware manner (reads/fragments that have exactly the same sequence but different UMI-sequence are not marked as duplicates).
 
+Few information must be provided to the pipeline:
+* the source fastq directory
+* the output directory where you want your results to be stored (if not already available, the pipeline will make it for you)
+* whether your data are paired- or single-end
+* the genome to use
+
+All the other parameters are already available in the `configfile_DNAmapping.yaml` file or hard-coded in the snakemake file.
+
+
+To partially avoid unexpected errors during the execution of the pipeline, a so called 'dry-run' is strongly recommended. Indeed, adding a `-n` flag at the end of the snakemake running command will allow snakemake to check that all links and file/parameters dependencies are satisfied before to run the "real" processes. This command will therefore help the debugging process. <br>
+*Always activate your environment, otherwise the pipeline won't be able to find the packages required for the analyses.*
+
+
+**Paired-end** (the `\` must be used every time you go to a new line)
+```shell
+snakemake \
+--cores 20 \
+-s </target/folder>/ChIP_Zwart/workflow//DNAmapping.snakefile \
+--configfile </target/folder>/ChIP_Zwart/config/configfile_DNAmapping.yaml \
+--config \
+fastq_directory="/path/to/pairedEnd/fastq_data" \
+output_directory="/path/to/results/directory/" \
+paired_end="True" \
+genome="hg38" \
+-n
+```
+
+**Single-end** (the `\` must be used every time you go to a new line)
+```shell
+snakemake \
+--cores 20 \
+-s </target/folder>/ChIP_Zwart/workflow//DNAmapping.snakefile \
+--configfile </target/folder>/ChIP_Zwart/config/configfile_DNAmapping.yaml \
+--config \
+fastq_directory="/path/to/singleEnd/fastq_data" \
+output_directory="/path/to/results/directory/" \
+paired_end="False" \
+genome="hg19" \
+-n
+```
+
+If no errors occur, the pipeline can be run with the same command but without the final `-n` flag:
+
+Notice that the absence of errors does not mean that the pipeline will run without any issues; the "dry-run" is only checking whether all the resources are available. <br>
 
 <br/><br/>
 
@@ -56,7 +100,66 @@ Here after you can see the full potential workflow of the single-end and paired-
 
 <br/><br/>
 
+#### Peak calling results
+The results structure is the following:
+* *01_trimmed_fastq* -> fastq.gz files that underwent trimming by cutadapt
+* *02_BAM* -> mapped reads (bam) filtered for MAPQ, mate-fixed, duplicates marked and eventually UMI-fixed
+* *03_quality_controls* -> here you can find the fastQC on the trimmed fastq (if required), with the corresponding multiQC report, as well the multiQC report (flagstat + MarkDuplicates) for the filtered bams
 
+
+Here an example directory tree (paired-end run):
+<pre>
+<b><em>output_folder</em></b>
+├── <b>01_trimmed_fastq</b>
+│   ├── <em>sample</em>_R1_trimmed.fastq.gz
+│   └── <em>sample</em>_R2_trimmed.fastq.gz
+│
+├── <b>02_BAM</b>
+│   ├── <em>sample</em>_mapq20_mdup_sorted.bam
+│   ├── <em>sample</em>_mapq20_mdup_sorted.bai
+│   ├── <b>BWA_summary</b>
+│   │   └── <em>sample</em>.BWA_summary.txt
+│   ├── <b>flagstat</b>
+│   │   └── <em>sample</em>_mapq20_mdup_sorted_flagstat.txt
+|   ├── <b>MarkDuplicates_metrics</b>
+│   │   └── <em>sample</em>_MarkDuplicates_metrics.txt
+│   └── <b>umi_metrics</b>  ### (if UMI present) ##
+│       └── <em>sample</em>_UMI_metrics.txt
+|
+└── <b>03_quality_controls</b>
+    ├── <b>multiQC_bam_filtered</b>
+    │   └── multiQC_bam_filtered.html
+    ├── <b>trimmed_fastq_fastqc</b>
+    │   ├── <em>sample</em>_R1_trimmed_fastqc.html
+    │   ├── <em>sample</em>_R1_trimmed_fastqc.zip
+    │   ├── <em>sample</em>_R2_trimmed_fastqc.html
+    │   └── <em>sample</em>_R2_trimmed_fastqc.zip
+    └── <b>05_Quality_controls_and_statistics</b>
+        └── multiQC_report_trimmed_fastq.html
+</pre>
+
+<br/><br/>
+
+#### Peak calling config file
+
+| **Parameter**   |  **Description**   |
+|------------:|:----------------|
+| *umi_present* | Default: `True`. True/False to indicate whether the data contain UMIs (ignored for single-end data). |
+| *fastq_suffix* | Default: `".fastq.gz"`. String with the suffix of the source fastq files. |
+| *read_suffix* | Default: `['_R1', '_R2']`. A python-formatted list with two strings containing the suffix used to indicate read1 and read2 respectively. In the case of single end reads, only the first value will be read. If your single data do not have any read-prefix set this parameter to: `['', '']` (blank). |
+| *cutadapt_trimm_options* | Default: `''` (blank). String indicating additional user-specific values to pass to cutadapt. |
+| *fw_adapter_sequence* | Default: `"AGATCGGAAGAGC"`. Sequence of the adapter1 (flag `-a` of cutadapt). |
+| *rv_adapter_sequence* | Default: `"AGATCGGAAGAGC"`. Sequence of the adapter2 (flag `-A` of cutadapt). |
+| *run_fastq_qc* | Default: `False`. True/False to indicate whether to run the fastQC on the . |
+| *use_bwamem2* | Default: `False`. True/False to define whether to run [bwa-mem2](https://github.com/bwa-mem2/bwa-mem2) instead of [bwa](https://bio-bwa.sourceforge.net/). |
+| *bwa_options* | Default: `''` (blank). String indicating additional user-specific values to pass to bwa. |
+| *remove_duplicates* | Default: `False`. True/False to define whether remove the duplicates from the bam files (if true the tag in the bams will be *_dedup* instead of *_mdup*). |
+| *MAPQ_threshold* | Default: `20`. All reads with a mapping quality (MAPQ) score lower than this value will be filtered out from the bam files. |
+
+
+<br/><br/>
+
+<hr style="border:2px solid blue">
 
 
 <br/><br/>
@@ -74,15 +177,15 @@ This configuration file must be in a tab-delimited txt file format (with column 
 | sample_C        |   input_C        |    true       |
 
 
-Few additional information must be provided to the piepiline:
+Few additional information must be provided to the pipeline:
 * the source bam directory (e.g. *rename* folder)
 * the output directory where you want your results to be stored (if not already available, the pipeline will make it for you)
 * whether your data contain UMIs
 * whether your data are paired- or single-end
-* the genome to used
+* the genome to use
 * the path to the sample configuration table
 
-All the other parameters are already available in the config_peakcalling.yaml file or hard-coded in the snakamake file.
+All the other parameters are already available in the `configfile_peakcalling.yaml` file or hard-coded in the snakemake file.
 
 
 To partially avoid unexpected errors during the execution of the pipeline, a so called 'dry-run' is strongly recommended. Indeed, adding a `-n` flag at the end of the snakemake running command will allow snakemake to check that all links and file/parameters dependencies are satisfied before to run the "real" processes. This command will therefore help the debugging process. <br>
@@ -212,6 +315,7 @@ Here an example directory tree:
 | **Parameter**   |  **Description**   |
 |------------:|:----------------|
 | *bam_suffix* | Default: `".bam"`. String with the suffix of the source bam files. |
+| *umi_present* | Default: `True`. True/False to indicate whether the data contain UMIs (ignored for single-end data). |
 | *remove_duplicates* | Default: `False`. True/False to define whether remove the duplicates from the bam files (if true the tag in the bams will be *_dedup* instead of *_mdup*). |
 | *MAPQ_threshold* | Default: `20`. All reads with a mapping quality (MAPQ) score lower than this value will be filtered out from the bam files. |
 | *bigWig_binSize* | Default: `10`. Size, in bp, of the bins used to compute the normalized bigWig files. |
