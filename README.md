@@ -9,23 +9,6 @@
 ## Introduction
 In this repository is provide a snakemake-based pipeline for the analyses of ChIP-seq data. It allows the mapping of fastq files (both paired- and single-end) as well as other downstream analyses sturting from the bam files (i.e., mapping filtering, sample correlation, peak calling).
 
-### Citation
-If you use this package, please cite:
-
-<div class="warning" style='padding:2.5%; background-color:#ffffee; color:#787878; margin-left:5%; margin-right:5%; border-radius:15px;'>
-<span>
-<font size="-0.5">
-
-<div style="margin-left:2%; margin-right:2%; text-align: justify">
-*--- No publication associated yet ---*
-</div>
-</font>
-
-</span>
-</div>
-
-<br/><br/>
-
 ## Installation an dependencies
 To install the pipeline it is required to download this repository and the installation of a conda environment is strongly recommended.
 
@@ -64,6 +47,19 @@ Hereafter, the running commands for DNA-mapping and ChIP-seq peak calling will b
 
 <br/><br/>
 
+
+#### Peak calling workflow
+Here after you can see the full potential workflow of the single-end and paired-end DNA-mapping pipeline:
+
+![DNA mapping workflow](https://raw.githubusercontent.com/sebastian-gregoricchio/ChIP_Zwart/main/resources/DNAmapping_workflow_SE.PE.png)
+
+
+<br/><br/>
+
+
+
+
+<br/><br/>
 
 ### ChIP-seq peak calling
 To facilitate the analyses of the ChIP-seq analyses in the Zwart lab, it is strongly recommended to rename your files so that the files contain the wz number. To do that refer to the section [*Renaming files*](https://github.com/csijcs/snakepipes#renaming-files) of the [*Joe's GitHub*](https://github.com/csijcs/snakepipes#renaming-files).
