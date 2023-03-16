@@ -185,12 +185,12 @@ else:
 
 
 # BWA mapping -----------------------------------------------------------------------------
-if paired:
-    rule BWA_PE:
+if (paired & (eval(str(config["umi_present"])) == True)):
+    rule BWA_PE_UMI:
         input:
             R1_trimm = os.path.join("01_trimmed_fastq", "".join(["{SAMPLE}", config['read_suffix'][0], "_trimmed.fastq.gz"])),
             R2_trimm = os.path.join("01_trimmed_fastq", "".join(["{SAMPLE}", config['read_suffix'][1], "_trimmed.fastq.gz"])),
-            genome_bwt_2bit_64 = ancient(''.join([re.sub(".gz", "", genome_fasta, count=0, flags=0),bwa_idx]))
+            genome_index = ancient(''.join([re.sub(".gz", "", genome_fasta, count=0, flags=0),bwa_idx]))
         output:
             align_summary = "02_BAM/bwa_summary/{SAMPLE}.BWA_summary.txt",
             bam = temp("02_BAM/{SAMPLE}.sorted.bam")
@@ -230,10 +230,43 @@ if paired:
             samtools sort -m 2G -T 02_BAM/{params.sample} -@ 2 -O bam - > {output.bam} 2> {log.out};
             samtools flagstat {output.bam} > {output.align_summary}
             """
+
+elif (paired & (eval(str(config["umi_present"])) == False)):
+    rule BWA_PE:
+        input:
+            R1_trimm = os.path.join("01_trimmed_fastq", "".join(["{SAMPLE}", config['read_suffix'][0], "_trimmed.fastq.gz"])),
+            R2_trimm = os.path.join("01_trimmed_fastq", "".join(["{SAMPLE}", config['read_suffix'][1], "_trimmed.fastq.gz"])),
+            genome_index = ancient(''.join([re.sub(".gz", "", genome_fasta, count=0, flags=0),bwa_idx]))
+        output:
+            align_summary = "02_BAM/bwa_summary/{SAMPLE}.BWA_summary.txt",
+            bam = temp("02_BAM/{SAMPLE}.sorted.bam")
+        params:
+            bwa_opts = str(config["bwa_options"]),
+            sample = "{SAMPLE}",
+            bwa = bwa_version,
+            genome_fasta = genome_fasta
+        threads:
+            workflow.cores
+        log:
+            out = "02_BAM/logs/{SAMPLE}.sort.log"
+        shell:
+            """
+            printf '\033[1;36m{params.sample}: bwa mapping...\\n\033[0m'
+            mkdir -p 02_BAM/bwa_summary
+
+            ${{CONDA_PREFIX}}/bin/{params.bwa} mem \
+            -t {threads} \
+            -M {params.genome_fasta} {input.R1_trimm} {input.R2_trimm} |
+	          samtools fixmate -m - - |
+            samtools sort -m 2G -T 02_BAM/{params.sample} -@ 2 -O bam - > {output.bam} 2> {log.out};
+            samtools flagstat {output.bam} > {output.align_summary}
+            """
+
 else:
     rule BWA_SE:
         input:
-            R1_trimm = os.path.join("01_trimmed_fastq", "".join(["{SAMPLE}", config['read_suffix'][0], "_trimmed.fastq.gz"]))
+            R1_trimm = os.path.join("01_trimmed_fastq", "".join(["{SAMPLE}", config['read_suffix'][0], "_trimmed.fastq.gz"])),
+            genome_index = ancient(''.join([re.sub(".gz", "", genome_fasta, count=0, flags=0),bwa_idx]))
         output:
             align_summary = "02_BAM/bwa_summary/{SAMPLE}.BWA_summary.txt",
             bam = temp("02_BAM/{SAMPLE}.sorted.bam")
@@ -408,7 +441,7 @@ rule fastQC_trimmed_fastq:
 
 rule multiQC_trimmed_fastq:
     input:
-        fastqc_zip = expand(os.path.join(home_dir, "03_quality_controls/trimmed_fastq_fastqc","{runs}_trimmed_fastqc.zip"), runs = RUNNAMES)
+        fastqc_zip = expand(os.path.join("03_quality_controls/trimmed_fastq_fastqc","{runs}_trimmed_fastqc.zip"), runs = RUNNAMES)
     output:
         multiqc_fastqc_report = "03_quality_controls/trimmed_fastq_multiQC/multiQC_report_trimmed_fastq.html"
     params:
