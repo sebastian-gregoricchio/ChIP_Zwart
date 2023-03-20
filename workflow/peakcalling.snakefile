@@ -378,7 +378,7 @@ rule fragmentSizeDistribution:
         err = "05_Quality_controls_and_statistics/fragmentSize_distribution/logs/fragmentSize_distribution_log.err"
     shell:
         """
-        printf '\033[1;36mPlotting fingerprint...\\n\033[0m'
+        printf '\033[1;36mPlotting fragment size distribution...\\n\033[0m'
 
         mkdir -p 05_Quality_controls_and_statistics/fragmentSize_distribution/logs
 
