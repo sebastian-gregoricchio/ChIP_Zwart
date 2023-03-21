@@ -150,7 +150,7 @@ Here an example directory tree (paired-end run):
 | *cutadapt_trimm_options* | Default: `''` (blank). String indicating additional user-specific values to pass to cutadapt. |
 | *fw_adapter_sequence* | Default: `"AGATCGGAAGAGC"`. Sequence of the adapter1 (flag `-a` of cutadapt). |
 | *rv_adapter_sequence* | Default: `"AGATCGGAAGAGC"`. Sequence of the adapter2 (flag `-A` of cutadapt). |
-| *run_fastq_qc* | Default: `False`. True/False to indicate whether to run the fastQC on the . |
+| *run_fastq_qc* | Default: `False`. True/False to indicate whether to run the fastQC on the trimmed fastq file. |
 | *use_bwamem2* | Default: `False`. True/False to define whether to run [bwa-mem2](https://github.com/bwa-mem2/bwa-mem2) instead of [bwa](https://bio-bwa.sourceforge.net/). |
 | *bwa_options* | Default: `''` (blank). String indicating additional user-specific values to pass to bwa. |
 | *remove_duplicates* | Default: `False`. True/False to define whether remove the duplicates from the bam files (if true the tag in the bams will be *_dedup* instead of *_mdup*). |
