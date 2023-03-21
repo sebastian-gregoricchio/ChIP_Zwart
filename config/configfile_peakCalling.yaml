@@ -19,7 +19,7 @@ remove_duplicates: False
 MAPQ_threshold: 20
 
 ### 2. BigWig generation and normalizatioon
-bigWig_binSize: 10
+bigWig_binSize: 50
 
 ### 3. Peak calling
 use_macs3: False
