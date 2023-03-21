@@ -140,7 +140,7 @@ Here an example directory tree (paired-end run):
 
 <br/><br/>
 
-#### Peak calling config file
+#### DNA-mapping config file
 
 | **Parameter**   |  **Description**   |
 |------------:|:----------------|
@@ -160,6 +160,29 @@ Here an example directory tree (paired-end run):
 <br/><br/>
 
 <hr style="border:2px solid blue">
+
+
+### CRAM-TO-BAM
+It may happen that you start with `.cram` files provided by the GCF. However, the peak-calling pipeline works only with `.bam` files. Therefore, to convert the crams to bams you can use the mini-pipeline provided in this repository. You can also ask to the pipeline to rename your files with the "wz number" indicating `rename_zwart="True"` (otherwise use `rename_zwart="False"`):
+
+```shell
+snakemake \
+--cores 10 \
+-s </target/folder>/ChIP_Zwart/workflow/cramToBam.snakefile \
+--config \
+cram_directory="/path/to/input/cram_folder" \
+bam_out_directory="/path/to/output/bam_folder" \
+genome="hg38" \
+rename_zwart="True"
+```
+(the `\` must be used every time you go to a new line)
+
+**NOTE**: remember that the genome used for the conversion must match with the one used to generate the crams. Hence, if the crams do not come from the NKI-GCF please ask for assistance.
+
+<br/><br/>
+
+<hr style="border:2px solid blue">
+
 
 
 <br/><br/>
