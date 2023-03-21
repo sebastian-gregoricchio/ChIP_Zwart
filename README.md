@@ -177,9 +177,7 @@ rename_zwart="True"
 ```
 (the `\` must be used every time you go to a new line)
 
-**NOTE**: remember that the genome used for the conversion must match with the one used to generate the crams. Hence, if the crams do not come from the NKI-GCF please ask for assistance.
-
-<br/><br/>
+_**NOTE**_: remember that the genome used for the conversion must match with the one used to generate the crams. Hence, if the crams do not come from the NKI-GCF please ask for assistance.
 
 <hr style="border:2px solid blue">
 
