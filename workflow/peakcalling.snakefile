@@ -63,22 +63,14 @@ workdir: home_dir
 # loading the sample table
 sample_metadata = pd.read_csv(str(config["sample_config_table"]),  sep='\t+', engine='python')   # target_id | input_id | broad
 sample_metadata = sample_metadata.iloc[:,0:3].set_axis(['target_id', 'input_id', 'broad'], axis=1, inplace=False)
-TARGETNAMES_FULL = list(numpy.unique(list(sample_metadata.target_id)))
-TARGETNAMES = numpy.unique([re.sub(config['bam_suffix']+"$", "", i) for i in TARGETNAMES_FULL])
-INPUTNAMES_FULL = list(numpy.unique(list(sample_metadata.input_id)))
-INPUTNAMES = numpy.unique([re.sub(config['bam_suffix']+"$", "", i) for i in INPUTNAMES_FULL])
-SAMPLENAMES = list(numpy.unique(list(TARGETNAMES) + list(INPUTNAMES)))
+TARGETNAMES = list(numpy.unique(list(sample_metadata.target_id)))
+INPUTNAMES = list(numpy.unique(list(sample_metadata.input_id)))
+SAMPLENAMES = list(numpy.unique(TARGETNAMES + INPUTNAMES))
 
 
-# Get bam/sample list
-BAMS = []
-# Iterate directory
-for file in os.listdir(config["runs_directory"]):
-    # check only text files
-    if file.endswith(config['bam_suffix']):
-        BAMS.append(file)
-
-RUNNAMES = numpy.unique([re.sub(config['bam_suffix']+"$", "", i) for i in BAMS])
+# Get bam list
+BAMS = next(os.walk(config["runs_directory"]))[2]
+RUNNAMES = numpy.unique([re.sub(rf"{config['bam_suffix']}$", "", i) for i in BAMS])
 
 
 
