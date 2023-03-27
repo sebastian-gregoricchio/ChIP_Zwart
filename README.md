@@ -9,7 +9,7 @@
 
 <hr style="border:2px">
 
-**Table of Contents**
+# Table of Contents
 1. [Introduction](#intro)
 2. [Installation an dependencies](#dependencies)
     1. [Conda initialization](#condainit)
