@@ -1,0 +1,5 @@
+target_id	input_id	broad
+wz0001	wz1234	FALSE
+wz0002	wz1234	FALSE
+wz0003	wz9999	TRUE
+wz0004	wz9999	TRUE
