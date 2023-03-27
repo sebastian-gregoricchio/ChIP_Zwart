@@ -44,7 +44,7 @@ Hereafter, the running commands for DNA-mapping and ChIP-seq peak calling will b
 ### DNA-mapping
 This short pipeline performs the mapping into a reference genome upon trimming of the raw fastq reads by [cutadapt](https://cutadapt.readthedocs.io/en/stable/). Further, a filter on the mapping quality (MAPQ) is applied and duplicated reads are marked. Notice that in the case of paired-end reads, when present, UMIs (Unique Molecule Identifiers) sequence is added to the indexes ones in the read name. This is allows the marking of the duplicated reads in a UMI-aware manner (reads/fragments that have exactly the same sequence but different UMI-sequence are not marked as duplicates).
 
-Few information must be provided to the pipeline:
+Additional information must be provided to the pipeline in the command line:
 * the source fastq directory
 * the output directory where you want your results to be stored (if not already available, the pipeline will make it for you)
 * whether your data are paired- or single-end
@@ -141,6 +141,7 @@ Here an example directory tree (paired-end run):
 <br/><br/>
 
 #### DNA-mapping config file
+Hereafter there are some details of additional parameters available in the `configfile_DNAmapping.yaml`. However, default parameters are already pre-set and should not be changed without expert advices. <br> If you wish to make changes, just make a copy of the config file and provide the path to the new file in the snakemake running command line.
 
 | **Parameter**   |  **Description**   |
 |------------:|:----------------|
@@ -186,7 +187,7 @@ _**NOTE**_: remember that the genome used for the conversion must match with the
 <br/><br/>
 
 ### ChIP-seq peak calling
-To facilitate the analyses of the ChIP-seq analyses in the Zwart lab, it is strongly recommended to rename your files so that the files contain the wz number. To do that refer to the section [*Renaming files*](https://github.com/csijcs/snakepipes#renaming-files) of the [*Joe's GitHub*](https://github.com/csijcs/snakepipes#renaming-files).
+To facilitate the analyses of the ChIP-seq analyses in the Zwart lab, it is strongly recommended to rename your files so that the files contain the wz number. <br> If your already run the `cramToBam` pipeline with the `rename_zwart="True"` flag, this renaming step has been already done. <br> Otherwise, to do that you can find the original section [*Renaming files*](https://github.com/csijcs/snakepipes#renaming-files) from [*Joe's GitHub*](https://github.com/csijcs/snakepipes#renaming-files) also in this repository at [`resources/renaming_wzNumbers_Joe`](https://github.com/sebastian-gregoricchio/ChIP_Zwart/tree/main/resources/renaming_wzNumbers_Joe). More details and the [`rename_files.R`](https://github.com/sebastian-gregoricchio/ChIP_Zwart/tree/main/resources/renaming_wzNumbers_Joe/rename_files.R) script can be found in [`this folder`](https://github.com/sebastian-gregoricchio/ChIP_Zwart/tree/main/resources/renaming_wzNumbers_Joe) as well.
 
 The pipeline requires a sample configuration file which provides information about ChIP-Input pairs and the type of peak calling to perform (broad or narrow). <br>
 This configuration file must be in a tab-delimited txt file format (with column names) containing the following information (respect the column order):
@@ -197,13 +198,14 @@ This configuration file must be in a tab-delimited txt file format (with column 
 | sample_B        |   input_A-B      |    false      |
 | sample_C        |   input_C        |    true       |
 
+An dummy-table could be found in [`resources/peakCalling_sampleConfig_example.txt`](https://github.com/sebastian-gregoricchio/ChIP_Zwart/blob/main/resources/peakCalling_sampleConfig_example.txt).
 
-Few additional information must be provided to the pipeline:
+Additional information must be provided to the pipeline in the command line:
 * the source bam directory (e.g. *rename* folder)
 * the output directory where you want your results to be stored (if not already available, the pipeline will make it for you)
 * whether your data contain UMIs
 * whether your data are paired- or single-end
-* the genome to use
+* the genome to use (available options: `hg38`, `hg38`, `hg38_ucsc`, `hg19_ucsc`, `mm10`, `mm9`, `rn6`)
 * the path to the sample configuration table
 
 All the other parameters are already available in the `configfile_peakcalling.yaml` file or hard-coded in the snakemake file.
@@ -332,6 +334,7 @@ Here an example directory tree:
 <br/><br/>
 
 #### Peak calling config file
+Hereafter there are some details of additional parameters available in the `configfile_peakCalling.yaml`. However, default parameters are already pre-set and should not be changed without expert advices. <br> If you wish to make changes, just make a copy of the config file and provide the path to the new file in the snakemake running command line.
 
 | **Parameter**   |  **Description**   |
 |------------:|:----------------|
@@ -348,10 +351,19 @@ Here an example directory tree:
 | *correlation_heatmap_colorMap* | Default: `'PuBuGn'`. A string indicating the color gradient pattern to use for the correlation heatmaps. This value is passed to matplotlib/seaborn. Therefore, available options (see [matplotlib page](https://matplotlib.org/stable/tutorials/colors/colormaps.html) for examples) are the following: 'Accent', 'Blues', 'BrBG', 'BuGn', 'BuPu', 'CMRmap', 'Dark2', 'GnBu', 'Greens', 'Greys', 'OrRd', 'Oranges', 'PRGn', 'Paired', 'Pastel1', 'Pastel2', 'PiYG', 'PuBu', 'PuBuGn', 'PuOr', 'PuRd', 'Purples', 'RdBu', 'RdGy', 'RdPu', 'RdYlBu', 'RdYlGn', 'Reds', 'Set1', 'Set2', 'Set3', 'Spectral', 'Wistia', 'YlGn', 'YlGnBu', 'YlOrBr', 'YlOrRd', 'afmhot', 'autumn', 'binary', 'bone', 'brg', 'bwr', 'cividis', 'cool', 'coolwarm', 'copper', 'cubehelix', 'flag', 'gist_earth', 'gist_gray', 'gist_heat', 'gist_ncar', 'gist_rainbow', 'gist_stern', 'gist_yarg', 'gnuplot', 'gnuplot2', 'gray', 'hot', 'hsv', 'icefire', 'inferno', 'jet', 'magma', 'mako', 'nipy_spectral', 'ocean', 'pink', 'plasma', 'prism', 'rainbow', 'rocket', 'seismic', 'spring', 'summer', 'tab10', 'tab20', 'tab20b', 'tab20c', 'terrain', 'twilight', 'twilight_shifted', 'viridis', 'vlag', 'winter'. |
 |*zScore_heatmap_color*| Default: `"seismic"`. A string indicating the color gradient pattern to use for the peak score heatmaps. This value is passed to matplotlib/seaborn. Therefore, available options (see [matplotlib page](https://matplotlib.org/stable/tutorials/colors/colormaps.html) for examples) are the following: 'Accent', 'Blues', 'BrBG', 'BuGn', 'BuPu', 'CMRmap', 'Dark2', 'GnBu', 'Greens', 'Greys', 'OrRd', 'Oranges', 'PRGn', 'Paired', 'Pastel1', 'Pastel2', 'PiYG', 'PuBu', 'PuBuGn', 'PuOr', 'PuRd', 'Purples', 'RdBu', 'RdGy', 'RdPu', 'RdYlBu', 'RdYlGn', 'Reds', 'Set1', 'Set2', 'Set3', 'Spectral', 'Wistia', 'YlGn', 'YlGnBu', 'YlOrBr', 'YlOrRd', 'afmhot', 'autumn', 'binary', 'bone', 'brg', 'bwr', 'cividis', 'cool', 'coolwarm', 'copper', 'cubehelix', 'flag', 'gist_earth', 'gist_gray', 'gist_heat', 'gist_ncar', 'gist_rainbow', 'gist_stern', 'gist_yarg', 'gnuplot', 'gnuplot2', 'gray', 'hot', 'hsv', 'icefire', 'inferno', 'jet', 'magma', 'mako', 'nipy_spectral', 'ocean', 'pink', 'plasma', 'prism', 'rainbow', 'rocket', 'seismic', 'spring', 'summer', 'tab10', 'tab20', 'tab20b', 'tab20c', 'terrain', 'twilight', 'twilight_shifted', 'viridis', 'vlag', 'winter'. |
 
+<br/><br/>
+
+<hr style="border:2px">
+
+
+## Troubleshooting
+
+
 
 <br/><br/>
 
------------------
+<hr style="border:2px">
+
 ## Package history and releases
 A list of all releases and respective description of changes applied could be found [here](https://github.com/sebastian-gregoricchio/ChIP_Zwart/blob/main/NEWS.md).
 
