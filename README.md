@@ -194,9 +194,9 @@ This configuration file must be in a tab-delimited txt file format (with column 
 
 | **target_id**   |   **input_id**   |   **broad**   |
 |:----------------|:-----------------|:--------------|
-| sample_A        |   input_A-B      |    false      |
-| sample_B        |   input_A-B      |    false      |
-| sample_C        |   input_C        |    true       |
+| sample_A        |   input_A-B      |    False      |
+| sample_B        |   input_A-B      |    False      |
+| sample_C        |   input_C        |    True       |
 
 An dummy-table could be found in [`resources/peakCalling_sampleConfig_example.txt`](https://github.com/sebastian-gregoricchio/ChIP_Zwart/blob/main/resources/peakCalling_sampleConfig_example.txt).
 
