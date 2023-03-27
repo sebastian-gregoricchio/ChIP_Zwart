@@ -48,7 +48,7 @@ Additional information must be provided to the pipeline in the command line:
 * the source fastq directory
 * the output directory where you want your results to be stored (if not already available, the pipeline will make it for you)
 * whether your data are paired- or single-end
-* the genome to use
+* the genome to use (available options: `hg38`, `hg19`, `hg38_ucsc`, `hg19_ucsc`, `mm10`, `mm9`, `rn6`)
 
 All the other parameters are already available in the `configfile_DNAmapping.yaml` file or hard-coded in the snakemake file.
 
@@ -178,7 +178,7 @@ rename_zwart="True"
 ```
 (the `\` must be used every time you go to a new line)
 
-_**NOTE**_: remember that the genome used for the conversion must match with the one used to generate the crams. Hence, if the crams do not come from the NKI-GCF please ask for assistance.
+_**NOTE**_: remember that the genome used for the conversion must match with the one used to generate the crams. Hence, if the crams do not come from the NKI-GCF please ask for assistance. Available options for the genome are:  `hg38`, `hg19`, `hg38_ucsc`, `hg19_ucsc`, `mm10`, `mm9`, `rn6`.
 
 <hr style="border:2px solid blue">
 
@@ -205,7 +205,7 @@ Additional information must be provided to the pipeline in the command line:
 * the output directory where you want your results to be stored (if not already available, the pipeline will make it for you)
 * whether your data contain UMIs
 * whether your data are paired- or single-end
-* the genome to use (available options: `hg38`, `hg38`, `hg38_ucsc`, `hg19_ucsc`, `mm10`, `mm9`, `rn6`)
+* the genome to use (available options: `hg38`, `hg19`, `hg38_ucsc`, `hg19_ucsc`, `mm10`, `mm9`, `rn6`)
 * the path to the sample configuration table
 
 All the other parameters are already available in the `configfile_peakcalling.yaml` file or hard-coded in the snakemake file.
@@ -367,13 +367,15 @@ Now load again the ChIP pipeline environment by typing `conda activate chip_zwar
 
 <hr style="border:2px">
 
-## Package history and releases
+
+## Pipeline info
+### Package history and releases
 A list of all releases and respective description of changes applied could be found [here](https://github.com/sebastian-gregoricchio/ChIP_Zwart/blob/main/NEWS.md).
 
-## Contact
+### Contact
 For any suggestion, bug fixing, commentary please report it in the [issues](https://github.com/sebastian-gregoricchio/ChIP_Zwart/issues)/[request](https://github.com/sebastian-gregoricchio/ChIP_Zwart/pulls) tab of this repository.
 
-## License
+### License
 This repository is under a [GNU General Public License (version 3)](https://github.com/sebastian-gregoricchio/ChIP_Zwart/blob/main/LICENSE.md/LICENSE.md).
 
 <br/>
