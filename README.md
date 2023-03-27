@@ -400,17 +400,17 @@ Now load again the ChIP pipeline environment by typing `conda activate chip_zwar
 <hr style="border:2px">
 
 
-## Pipeline info <a name="info"></a>
-### Package history and releases <a name="history"></a>
+## 5. Pipeline info <a name="info"></a>
+### 5.1. Package history and releases <a name="history"></a>
 A list of all releases and respective description of changes applied could be found [here](https://github.com/sebastian-gregoricchio/ChIP_Zwart/blob/main/NEWS.md).
 
-### Contact <a name="contact"></a>
+### 5.2. Contact <a name="contact"></a>
 For any suggestion, bug fixing, commentary please report it in the [issues](https://github.com/sebastian-gregoricchio/ChIP_Zwart/issues)/[request](https://github.com/sebastian-gregoricchio/ChIP_Zwart/pulls) tab of this repository.
 
-### License <a name="license"></a>
+### 5.3. License <a name="license"></a>
 This repository is under a [GNU General Public License (version 3)](https://github.com/sebastian-gregoricchio/ChIP_Zwart/blob/main/LICENSE.md/LICENSE.md).
 
 <br/>
 
-### Contributors <a name="contributors"></a>
+### 5.4. Contributors <a name="contributors"></a>
 ![contributors](https://badges.pufler.dev/contributors/sebastian-gregoricchio/ChIP_Zwart?size=50&padding=5&bots=true)
