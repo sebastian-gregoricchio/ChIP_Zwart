@@ -2,6 +2,7 @@
 This fastq/bam Zwart-specific renaming procedure has been originally developed by Joseph (Joe) Seifert and can be found at his [*GitHub page*](https://github.com/csijcs/snakepipes#renaming-files) at the [*Renaming files* section](https://github.com/csijcs/snakepipes#renaming-files).
 ----------------------------------
 
+<br>
 
 ## Renaming files
 **NOTE** - all of you're sequencing filenames should contain a wz number (i.e. wz3909). Make sure to submit your samples with a wz number in the name or this script will not work. If there are two samples with the same wz number (i.e. same sample split across two lanes) the second file will be renamed wzNUMBER_2 (i.e. wz3909_2). If there are more than two (not likely, but possible), it will give an error and not rename your additional files. If you do actually have more than two (i.e. same sample split across more than two lanes), seek professional help.
