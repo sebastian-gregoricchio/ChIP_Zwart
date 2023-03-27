@@ -376,7 +376,6 @@ else: # Single-end/no-UMI dedup
             """
             printf '\033[1;36m{params.sample}: 'standard' gatk MarkDuplicates...\\n\033[0m'
 
-            mkdir -p 02_BAM/umi_metrics
             mkdir -p 02_BAM/MarkDuplicates_metrics
             mkdir -p 02_BAM/MarkDuplicates_logs
             mkdir -p 02_BAM/flagstat

@@ -282,7 +282,6 @@ if (eval(str(config["skip_bam_filtering"])) == False):
                 """
                 printf '\033[1;36m{params.sample}: 'standard' gatk MarkDuplicates...\\n\033[0m'
 
-                mkdir -p 01_BAM_filtered/umi_metrics
                 mkdir -p 01_BAM_filtered/MarkDuplicates_metrics
                 mkdir -p 01_BAM_filtered/MarkDuplicates_logs
                 mkdir -p 01_BAM_filtered/flagstat
