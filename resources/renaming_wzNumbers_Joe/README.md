@@ -1,6 +1,6 @@
 ----------------------------------
 This fastq/bam Zwart-specific renaming procedure has been originally developed by Joseph (Joe) Seifert and can be found at his [*GitHub page*](https://github.com/csijcs/snakepipes#renaming-files) at the [*Renaming files* section](https://github.com/csijcs/snakepipes#renaming-files).
-#
+#---------------------------------
 
 <br>
 
