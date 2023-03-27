@@ -6,13 +6,28 @@
 ![visits](https://badges.pufler.dev/visits/sebastian-gregoricchio/ChIP_Zwart) --->
 
 # ChIP-seq for Zwartlab
-## Introduction
+
+
+
+
+
+**Table of Contents**
+1. [Introduction](#intro)
+2. [Installation an dependencies](#dependencies)
+__2.1. [Conda initialization](#condaInit)
+__2.2. [Environment installation](#envInstall)
+3. [How to run the pipeline](#running)
+
+
+
+
+## 1. Introduction <a name="intro"></a>
 In this repository is provide a snakemake-based pipeline for the analyses of ChIP-seq data. It allows the mapping of fastq files (both paired- and single-end) as well as other downstream analyses sturting from the bam files (i.e., mapping filtering, sample correlation, peak calling).
 
-## Installation an dependencies
+## 2. Installation an dependencies <a name="dependencies"></a>
 To install the pipeline it is required to download this repository and the installation of a conda environment is strongly recommended.
 
-### Conda initialization
+### 2.1 Conda initialization <a name="condaInit"></a>
 If never done before proceed to the following steps:
 * initialize conda in your environment by: `/opt/miniconda3/bin/conda init`
 * actualize the terminal with: `source ~/.bashrc`
@@ -22,7 +37,7 @@ On your terminal, it should appear `(base) your.name@harris:~$`. If this is not 
 Ensure you have the proper conda path (/opt/miniconda3/bin/conda) by running: `which conda`
 
 
-### Environment installation
+### Environment installation <a name="envInstall"></a>
 To avoid packages version incompatibility a yam file with fixed packages versions is provided in this repository.
 
 For the installation, follow the following steps:
@@ -36,7 +51,7 @@ For the installation, follow the following steps:
 
 
 
-## How to run the pipeline
+## How to run the pipeline <a name="running"></a>
 The snakemake pipeline requires at least two files: a) the `.snakefile`, containing all the rules that will be run; b) the `configuration.yaml` file, in which the user can define and customize all the parameters for the different pipeline steps. <br>
 Hereafter, the running commands for DNA-mapping and ChIP-seq peak calling will be described for both single and paired-end data.
 
