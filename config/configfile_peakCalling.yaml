@@ -13,13 +13,14 @@ genome:
 umi_present:
 paired_end:
 bam_suffix: ".bam"
+skip_bam_filtering: False
 
 ### 1. BAM filtering
 remove_duplicates: False
 MAPQ_threshold: 20
 
 ### 2. BigWig generation and normalizatioon
-bigWig_binSize: 50
+bigWig_binSize: 10
 
 ### 3. Peak calling
 use_macs3: False
