@@ -7,9 +7,7 @@
 
 # ChIP-seq for Zwartlab
 
-
-
-
+<hr style="border:2px">
 
 **Table of Contents**
 1. [Introduction](#intro)
@@ -33,7 +31,9 @@
     3. [License](#license)
     4. [Contributors](#contributors)
 
+<hr style="border:2px">
 
+<br/><br/>
 
 
 ## 1. Introduction <a name="intro"></a>
