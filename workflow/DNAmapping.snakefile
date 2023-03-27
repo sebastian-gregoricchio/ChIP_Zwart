@@ -13,13 +13,14 @@ from itertools import combinations
 
 
 ### Define the genomes (ZWART source)
-genomes_table = pd.DataFrame({'genome_id': ['hg38', 'hg19', 'hg38_ucsc', 'hg19_ucsc', 'mm10', 'mm9'],
+genomes_table = pd.DataFrame({'genome_id': ['hg38', 'hg19', 'hg38_ucsc', 'hg19_ucsc', 'mm10', 'mm9', 'rn6'],
                               'fasta': ['/shared/data/Zwartlab/snakepipes_indices/hg38/BWAIndex/genome.fa',
                                         '/shared/data/Zwartlab/snakepipes_indices/hg19/BWAIndex/genome.fa',
                                         '/home/s.gregoricchio/annotations/genomes/Hg19_UCSC/one_file_fasta/hg19.fa.gz',
                                         'hg38_ucsc',
                                         '/home/s.gregoricchio/annotations/genomes/Mm10/one_file_fasta/Mus_musculus_GRCm38_Mm10_GCA_000001635.2_UCSC.fa',
-                                        'mm10_ucsc']})
+                                        'mm10_ucsc',
+                                        '/shared/data/Zwartlab/snakepipes_indices/Rnor_6.0/BWAIndex/Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa']})
 
 # Define genral variables
 genome_used = (str(config["genome"])).lower()
