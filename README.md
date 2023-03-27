@@ -417,4 +417,4 @@ This repository is under a [GNU General Public License (version 3)](https://gith
 <br/>
 
 ### 5.4. Contributors <a name="contributors"></a>
-![contributors](https://badges.pufler.dev/contributors/sebastian-gregoricchio/ChIP_Zwart?size=50&padding=5&bots=true)
+![contributors](https://contrib.rocks/image?repo=sebastian-gregoricchio/chip_zwart)
