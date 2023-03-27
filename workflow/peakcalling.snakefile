@@ -195,104 +195,129 @@ else:
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # ========================================================================================
 
-rule MAPQ_filter:
-    input:
-        source_bam = os.path.join(config["runs_directory"], ''.join(["{SAMPLE}", config["bam_suffix"]]))
-    output:
-        bam_mapq_only = temp(os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), ".bam"]))),
-        bam_mapq_only_sorted = temp(os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_sorted.bam"]))),
-        bam_mapq_only_sorted_index = temp(os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_sorted.bam.bai"])))
-    params:
-        sample = "{SAMPLE}",
-        MAPQ_threshold = config["MAPQ_threshold"]
-    threads:
-        math.ceil(workflow.cores/len(SAMPLENAMES))
-    shell:
-        """
-        printf '\033[1;36m{params.sample}: filtering MAPQ and re-indexing...\\n\033[0m'
-
-        samtools view -@ {threads} -h -q {params.MAPQ_threshold} {input.source_bam} -o {output.bam_mapq_only}
-
-        samtools sort -@ {threads} {output.bam_mapq_only} -o {output.bam_mapq_only_sorted}
-        samtools index -@ {threads} -b {output.bam_mapq_only_sorted} {output.bam_mapq_only_sorted_index}
-        """
-
-
-if ((eval(str(config["paired_end"])) == True) & (eval(str(config["umi_present"])) == True)):
-    rule gatk4_markdups_umiAware:
+if (eval(str(config["skip_bam_filtering"])) == False):
+    rule MAPQ_filter:
         input:
-            bam_mapq_only_sorted = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_sorted.bam"])),
-            bam_mapq_only_sorted_index = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_sorted.bam.bai"]))
+            source_bam = os.path.join(config["runs_directory"], ''.join(["{SAMPLE}", config["bam_suffix"]]))
+        output:
+            bam_mapq_only = temp(os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), ".bam"]))),
+            bam_mapq_only_sorted = temp(os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_sorted.bam"]))),
+            bam_mapq_only_sorted_index = temp(os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_sorted.bam.bai"])))
+        params:
+            sample = "{SAMPLE}",
+            MAPQ_threshold = config["MAPQ_threshold"]
+        threads:
+            math.ceil(workflow.cores/len(SAMPLENAMES))
+        shell:
+            """
+            printf '\033[1;36m{params.sample}: filtering MAPQ and re-indexing...\\n\033[0m'
+
+            samtools view -@ {threads} -h -q {params.MAPQ_threshold} {input.source_bam} -o {output.bam_mapq_only}
+
+            samtools sort -@ {threads} {output.bam_mapq_only} -o {output.bam_mapq_only_sorted}
+            samtools index -@ {threads} -b {output.bam_mapq_only_sorted} {output.bam_mapq_only_sorted_index}
+            """
+
+
+    if ((eval(str(config["paired_end"])) == True) & (eval(str(config["umi_present"])) == True)):
+        rule gatk4_markdups_umiAware:
+            input:
+                bam_mapq_only_sorted = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_sorted.bam"])),
+                bam_mapq_only_sorted_index = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_sorted.bam.bai"]))
+            output:
+                bam_mdup = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bam"])),
+                bai_mdup = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bai"])),
+                umi_metrics = "01_BAM_filtered/umi_metrics/{SAMPLE}_UMI_metrics.txt",
+                dup_metrics = "01_BAM_filtered/MarkDuplicates_metrics/{SAMPLE}_MarkDuplicates_metrics.txt",
+                flagstat_filtered = os.path.join("01_BAM_filtered/flagstat/", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted_flagstat.txt"]))
+            params:
+                remove_duplicates = (str(config["remove_duplicates"])).lower(),
+                sample = "{SAMPLE}"
+            log:
+                out = "01_BAM_filtered/MarkDuplicates_logs/{SAMPLE}_MarkDuplicates.out",
+                err = "01_BAM_filtered/MarkDuplicates_logs/{SAMPLE}_MarkDuplicates.err"
+            threads:
+                workflow.cores
+            shell:
+                """
+                printf '\033[1;36m{params.sample}: UMI-aware gatk MarkDuplicates...\\n\033[0m'
+
+                mkdir -p 01_BAM_filtered/umi_metrics
+                mkdir -p 01_BAM_filtered/MarkDuplicates_metrics
+                mkdir -p 01_BAM_filtered/MarkDuplicates_logs
+                mkdir -p 01_BAM_filtered/flagstat
+
+                gatk UmiAwareMarkDuplicatesWithMateCigar \
+                --INPUT {input.bam_mapq_only_sorted} \
+                --OUTPUT {output.bam_mdup} \
+                --REMOVE_DUPLICATES {params.remove_duplicates} \
+                --MAX_EDIT_DISTANCE_TO_JOIN 1 \
+                --UMI_METRICS_FILE {output.umi_metrics} \
+                --OPTICAL_DUPLICATE_PIXEL_DISTANCE 2500 \
+                --UMI_TAG_NAME RX \
+                --CREATE_INDEX true \
+                --METRICS_FILE {output.dup_metrics} 2> {log.out} > {log.err}
+
+                samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
+                """
+    else: # Single-end/no-UMI dedup
+        rule gatk4_markdups:
+            input:
+                bam_mapq_only_sorted = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_sorted.bam"])),
+                bam_mapq_only_sorted_index = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_sorted.bam.bai"]))
+            output:
+                bam_mdup = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bam"])),
+                bai_mdup = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bai"])),
+                dup_metrics = "01_BAM_filtered/MarkDuplicates_metrics/{SAMPLE}_MarkDuplicates_metrics.txt",
+                flagstat_filtered = os.path.join("01_BAM_filtered/flagstat/", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted_flagstat.txt"]))
+            params:
+                remove_duplicates = (str(config["remove_duplicates"])).lower(),
+                sample = "{SAMPLE}"
+            log:
+                out = "01_BAM_filtered/MarkDuplicates_logs/{SAMPLE}_MarkDuplicates.out",
+                err = "01_BAM_filtered/MarkDuplicates_logs/{SAMPLE}_MarkDuplicates.err"
+            threads:
+                workflow.cores
+            shell:
+                """
+                printf '\033[1;36m{params.sample}: 'standard' gatk MarkDuplicates...\\n\033[0m'
+
+                mkdir -p 01_BAM_filtered/umi_metrics
+                mkdir -p 01_BAM_filtered/MarkDuplicates_metrics
+                mkdir -p 01_BAM_filtered/MarkDuplicates_logs
+                mkdir -p 01_BAM_filtered/flagstat
+
+                gatk MarkDuplicatesWithMateCigar \
+                --INPUT {input.bam_mapq_only_sorted} \
+                --OUTPUT {output.bam_mdup} \
+                --REMOVE_DUPLICATES {params.remove_duplicates} \
+                --OPTICAL_DUPLICATE_PIXEL_DISTANCE 2500 \
+                --CREATE_INDEX true \
+                --METRICS_FILE {output.dup_metrics} 2> {log.out} > {log.err}
+
+                samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
+                """
+else:
+    rule bam_link__skip_filtering:
+        input:
+            source_bam = os.path.join(config["runs_directory"], ''.join(["{SAMPLE}", config["bam_suffix"]]))
         output:
             bam_mdup = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bam"])),
             bai_mdup = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bai"])),
-            umi_metrics = "01_BAM_filtered/umi_metrics/{SAMPLE}_UMI_metrics.txt",
-            dup_metrics = "01_BAM_filtered/MarkDuplicates_metrics/{SAMPLE}_MarkDuplicates_metrics.txt",
             flagstat_filtered = os.path.join("01_BAM_filtered/flagstat/", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted_flagstat.txt"]))
         params:
-            remove_duplicates = (str(config["remove_duplicates"])).lower(),
             sample = "{SAMPLE}"
-        log:
-            out = "01_BAM_filtered/MarkDuplicates_logs/{SAMPLE}_MarkDuplicates.out",
-            err = "01_BAM_filtered/MarkDuplicates_logs/{SAMPLE}_MarkDuplicates.err"
         threads:
-            workflow.cores
+            math.ceil(workflow.cores/len(SAMPLENAMES))
         shell:
             """
-            printf '\033[1;36m{params.sample}: UMI-aware gatk MarkDuplicates...\\n\033[0m'
+            printf '\033[1;36m{params.sample} (skip filtering): linking bam, indexing and computing flagstat...\\n\033[0m'
 
-            mkdir -p 01_BAM_filtered/umi_metrics
-            mkdir -p 01_BAM_filtered/MarkDuplicates_metrics
-            mkdir -p 01_BAM_filtered/MarkDuplicates_logs
             mkdir -p 01_BAM_filtered/flagstat
 
-            gatk UmiAwareMarkDuplicatesWithMateCigar \
-            --INPUT {input.bam_mapq_only_sorted} \
-            --OUTPUT {output.bam_mdup} \
-            --REMOVE_DUPLICATES {params.remove_duplicates} \
-            --MAX_EDIT_DISTANCE_TO_JOIN 1 \
-            --UMI_METRICS_FILE {output.umi_metrics} \
-            --OPTICAL_DUPLICATE_PIXEL_DISTANCE 2500 \
-            --UMI_TAG_NAME RX \
-            --CREATE_INDEX true \
-            --METRICS_FILE {output.dup_metrics} 2> {log.out} > {log.err}
-
-            samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
-            """
-else: # Single-end/no-UMI dedup
-    rule gatk4_markdups:
-        input:
-            bam_mapq_only_sorted = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_sorted.bam"])),
-            bam_mapq_only_sorted_index = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_sorted.bam.bai"]))
-        output:
-            bam_mdup = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bam"])),
-            bai_mdup = os.path.join("01_BAM_filtered", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bai"])),
-            dup_metrics = "01_BAM_filtered/MarkDuplicates_metrics/{SAMPLE}_MarkDuplicates_metrics.txt",
-            flagstat_filtered = os.path.join("01_BAM_filtered/flagstat/", ''.join(["{SAMPLE}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted_flagstat.txt"]))
-        params:
-            remove_duplicates = (str(config["remove_duplicates"])).lower(),
-            sample = "{SAMPLE}"
-        log:
-            out = "01_BAM_filtered/MarkDuplicates_logs/{SAMPLE}_MarkDuplicates.out",
-            err = "01_BAM_filtered/MarkDuplicates_logs/{SAMPLE}_MarkDuplicates.err"
-        threads:
-            workflow.cores
-        shell:
-            """
-            printf '\033[1;36m{params.sample}: 'standard' gatk MarkDuplicates...\\n\033[0m'
-
-            mkdir -p 01_BAM_filtered/umi_metrics
-            mkdir -p 01_BAM_filtered/MarkDuplicates_metrics
-            mkdir -p 01_BAM_filtered/MarkDuplicates_logs
-            mkdir -p 01_BAM_filtered/flagstat
-
-            gatk MarkDuplicatesWithMateCigar \
-            --INPUT {input.bam_mapq_only_sorted} \
-            --OUTPUT {output.bam_mdup} \
-            --REMOVE_DUPLICATES {params.remove_duplicates} \
-            --OPTICAL_DUPLICATE_PIXEL_DISTANCE 2500 \
-            --CREATE_INDEX true \
-            --METRICS_FILE {output.dup_metrics} 2> {log.out} > {log.err}
+            BAM_REAL=$(realpath {input.source_bam})
+            ln -s $BAM_REAL {output.bam_mdup}
+            samtools index -@ {threads} -b {output.bam_mdup} {output.bai_mdup}
 
             samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
             """
@@ -730,18 +755,27 @@ else:
 
 # ------------------------------------------------------------------------------
 
+if (eval(str(config["skip_bam_filtering"])) == False):
+    picard_metrics_file = expand("01_BAM_filtered/MarkDuplicates_metrics/{sample}_MarkDuplicates_metrics.txt", sample = SAMPLENAMES)
+    picard_metrics_dir = "01_BAM_filtered/MarkDuplicates_metrics"
+else:
+    picard_metrics_file = []
+    picard_metrics_dir = []
+
+
 if ((eval(str(config["paired_end"])) == True)):
     rule multiQC_PE:
         input:
             fastqc = expand(os.path.join("02_fastQC_on_BAM_filtered/", ''.join(["{sample}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted_fastqc.zip"])), sample = SAMPLENAMES),
-            picard_metrics = expand("01_BAM_filtered/MarkDuplicates_metrics/{sample}_MarkDuplicates_metrics.txt", sample = SAMPLENAMES),
+            picard_metrics = picard_metrics_file,
             flagstat = expand(os.path.join("01_BAM_filtered/flagstat/", ''.join(["{sample}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted_flagstat.txt"])), sample = SAMPLENAMES),
             peaks = expand("04_Called_peaks/{target}.filtered.BAMPE_peaks.xls", target = TARGETNAMES)
         output:
             multiqc_report = "05_Quality_controls_and_statistics/multiQC/multiQC_report.html"
         params:
             out_directory = "05_Quality_controls_and_statistics/multiQC/",
-            multiqc_report_name = "multiQC_report.html"
+            multiqc_report_name = "multiQC_report.html",
+            picard_metrics_dir = picard_metrics_dir
         threads: 1
         log:
             out = "05_Quality_controls_and_statistics/multiQC/multiQC_report_log.out",
@@ -753,13 +787,13 @@ if ((eval(str(config["paired_end"])) == True)):
             $CONDA_PREFIX/bin/multiqc \
             -o {params.out_directory} \
             -n {params.multiqc_report_name} \
-            --dirs 02_fastQC_on_BAM_filtered 01_BAM_filtered/MarkDuplicates_metrics 01_BAM_filtered/flagstat 04_Called_peaks > {log.err} 2> {log.out}
+            --dirs 02_fastQC_on_BAM_filtered {params.picard_metrics_dir} 01_BAM_filtered/flagstat 04_Called_peaks > {log.err} 2> {log.out}
             """
 else:
     rule multiQC_SE:
         input:
             fastqc = expand(os.path.join("02_fastQC_on_BAM_filtered/", ''.join(["{sample}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted_fastqc.zip"])), sample = SAMPLENAMES),
-            picard_metrics = expand("01_BAM_filtered/MarkDuplicates_metrics/{sample}_MarkDuplicates_metrics.txt", sample = SAMPLENAMES),
+            picard_metrics = picard_metrics_file,
             flagstat = expand(os.path.join("01_BAM_filtered/flagstat/", ''.join(["{sample}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted_flagstat.txt"])), sample = SAMPLENAMES),
             peaks = expand("04_Called_peaks/{target}.filtered.BAM_peaks.xls", target = TARGETNAMES),
             phanthom = expand('04_Called_peaks/phantom/{target}.phantom.spp.out', target = TARGETNAMES)
@@ -767,7 +801,8 @@ else:
             multiqc_report = "05_Quality_controls_and_statistics/multiQC/multiQC_report.html"
         params:
             out_directory = "05_Quality_controls_and_statistics/multiQC/",
-            multiqc_report_name = "multiQC_report.html"
+            multiqc_report_name = "multiQC_report.html",
+            picard_metrics_dir = picard_metrics_dir
         threads: 1
         log:
             out = "05_Quality_controls_and_statistics/multiQC/multiQC_report_log.out",
@@ -781,7 +816,7 @@ else:
             $CONDA_PREFIX/bin/multiqc \
             -o {params.out_directory} \
             -n {params.multiqc_report_name} \
-            --dirs 02_fastQC_on_BAM_filtered 01_BAM_filtered/MarkDuplicates_metrics 01_BAM_filtered/flagstat 04_Called_peaks > {log.err} 2> {log.out}
+            --dirs 02_fastQC_on_BAM_filtered {params.picard_metrics_dir} 01_BAM_filtered/flagstat 04_Called_peaks > {log.err} 2> {log.out}
             """
 
 # ------------------------------------------------------------------------------
