@@ -357,7 +357,10 @@ Hereafter there are some details of additional parameters available in the `conf
 
 
 ## Troubleshooting
+It may happen that the piepline returns errors saying that certain python or R packages are not found even though the `chip_zwart` conda environment is loaded. <br>
+To solve this problem it is sufficient to unload all the conda environments (included the `base` one) by typing `conda deactivate` until all the environment are detached: `your.name@harris:~$`
 
+Now load again the ChIP pipeline environment by typing `conda activate chip_zwart`. <br> Check then that the pipeline is using the correct python version by typing `which python`. <br> The command should return something like `/home/your.name/.conda/envs/chip_zwart/bin/python` instead of `/usr/bin/python`.
 
 
 <br/><br/>
