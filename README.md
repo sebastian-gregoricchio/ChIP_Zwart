@@ -14,8 +14,8 @@
 **Table of Contents**
 1. [Introduction](#intro)
 2. [Installation an dependencies](#dependencies)
-  1. [Conda initialization](#condainit)
-  2. [Environment installation](#envinstall)
+    1. [Conda initialization](#condainit)
+    2. [Environment installation](#envinstall)
 3. [How to run the pipeline](#running)
 
 
