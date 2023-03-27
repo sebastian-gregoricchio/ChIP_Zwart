@@ -23,7 +23,7 @@ genomes_table = pd.DataFrame({'genome_id': ['hg38', 'hg19', 'hg38_ucsc', 'hg19_u
                                         'mm10_ucsc',
                                         '/shared/data/Zwartlab/snakepipes_indices/Rnor_6.0/BWAIndex/Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa']})
 
-# Define genral variables
+# Define general variables
 genome_used = (str(config["genome"])).lower()
 genome_fasta = (genomes_table[genomes_table['genome_id']==genome_used]).fasta.iloc[0]
 
