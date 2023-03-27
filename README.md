@@ -14,8 +14,8 @@
 **Table of Contents**
 1. [Introduction](#intro)
 2. [Installation an dependencies](#dependencies)
-    1. [Conda initialization](#condaInit)
-    2. [Environment installation](#envInstall)
+  1. [Conda initialization](#condainit)
+  2. [Environment installation](#envinstall)
 3. [How to run the pipeline](#running)
 
 
@@ -27,7 +27,7 @@ In this repository is provide a snakemake-based pipeline for the analyses of ChI
 ## 2. Installation an dependencies <a name="dependencies"></a>
 To install the pipeline it is required to download this repository and the installation of a conda environment is strongly recommended.
 
-### 2.1 Conda initialization <a name="condaInit"></a>
+### 2.1 Conda initialization <a name="condainit"></a>
 If never done before proceed to the following steps:
 * initialize conda in your environment by: `/opt/miniconda3/bin/conda init`
 * actualize the terminal with: `source ~/.bashrc`
@@ -37,7 +37,7 @@ On your terminal, it should appear `(base) your.name@harris:~$`. If this is not 
 Ensure you have the proper conda path (/opt/miniconda3/bin/conda) by running: `which conda`
 
 
-### Environment installation <a name="envInstall"></a>
+### Environment installation <a name="envinstall"></a>
 To avoid packages version incompatibility a yam file with fixed packages versions is provided in this repository.
 
 For the installation, follow the following steps:
