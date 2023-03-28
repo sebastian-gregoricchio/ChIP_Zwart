@@ -230,7 +230,7 @@ This configuration file must be in a tab-delimited txt file format (with column 
 | sample_B        |   input_A-B      |    False      |
 | sample_C        |   input_C        |    True       |
 
-An dummy-table could be found in [`resources/peakCalling_sampleConfig_example.txt`](https://github.com/sebastian-gregoricchio/ChIP_Zwart/blob/main/resources/peakCalling_sampleConfig_example.txt).
+A dummy-table could be found in [`resources/peakCalling_sampleConfig_example.txt`](https://github.com/sebastian-gregoricchio/ChIP_Zwart/blob/main/resources/peakCalling_sampleConfig_example.txt).
 
 Additional information must be provided to the pipeline in the command line:
 * the source bam directory (e.g. *rename* folder)
