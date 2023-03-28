@@ -10,7 +10,7 @@
 <hr style="border:2px">
 
 1. [Introduction](#intro)
-2. [Installation an dependencies](#dependencies)
+2. [Installation and dependencies](#dependencies)
     1. [Conda initialization](#condainit)
     2. [Environment installation](#envinstall)
 3. [How to run the pipeline](#running)
@@ -36,12 +36,12 @@
 
 
 ## 1. Introduction <a name="intro"></a>
-In this repository is provide a snakemake-based pipeline for the analyses of ChIP-seq data. It allows the mapping of fastq files (both paired- and single-end) as well as other downstream analyses sturting from the bam files (i.e., mapping filtering, sample correlation, peak calling).
+This repository provides a snakemake-based pipeline for the analyses of ChIP-seq data. The methods, programs and versions used are Zwart Lab approved for ChIP-seq analysis. The repository allows the mapping of fastq files (both paired- and single-end) as well as other downstream analyses starting from the bam files (i.e., mapping, filtering, sample correlation, peak calling).
 
 <br/><br/>
 
-## 2. Installation an dependencies <a name="dependencies"></a>
-To install the pipeline it is required to download this repository and the installation of a conda environment is strongly recommended.
+## 2. Installation and dependencies <a name="dependencies"></a>
+To install the pipeline it is required to download this repository and use conda for installation.
 
 ### 2.1 Conda initialization <a name="condainit"></a>
 If never done before proceed to the following steps:
@@ -61,25 +61,26 @@ For the installation, follow the following steps:
 * download the GitHub repository with `git clone https://github.com/sebastian-gregoricchio/ChIP_Zwart`, or click on *Code > Download ZIP* on the [GitHub page](https://github.com/sebastian-gregoricchio/ChIP_Zwart)
 * install the conda environment from the yaml environment file contained in the repository:<br>
 `conda env create -f </target/folder>/ChIP_Zwart/workflow/envs/chip_zwart_condaEnv_stable.yaml`
-* activate the environment: `conda activate chip_zwart` (if the env is not activated the pipeline won't work!)
+* activate the environment: `conda activate chip_zwart` (if the env is not activated the pipeline won't work!): <br>
+`(chip_zwart) your.name@harris:~$`
 
 <br/><br/>
 
 
 
 ## 3. How to run the pipeline <a name="running"></a>
-The snakemake pipeline requires at least two files: a) the `.snakefile`, containing all the rules that will be run; b) the `configuration.yaml` file, in which the user can define and customize all the parameters for the different pipeline steps. <br>
+The snakemake pipeline requires at least two files: a) the `.snakefile`, containing all the rules that will be run; b) the `configfile.yaml` file, in which the user can define and customize all the parameters for the different pipeline steps. <br>
 Hereafter, the running commands for DNA-mapping and ChIP-seq peak calling will be described for both single and paired-end data.
 
 
 ### 3.1 DNA-mapping <a name="dnamapping"></a>
-This short pipeline performs the mapping into a reference genome upon trimming of the raw fastq reads by [cutadapt](https://cutadapt.readthedocs.io/en/stable/). Further, a filter on the mapping quality (MAPQ) is applied and duplicated reads are marked. Notice that in the case of paired-end reads, when present, UMIs (Unique Molecule Identifiers) sequence is added to the indexes ones in the read name. This is allows the marking of the duplicated reads in a UMI-aware manner (reads/fragments that have exactly the same sequence but different UMI-sequence are not marked as duplicates).
+This short pipeline performs the mapping (alignment) to a reference genome upon trimming of the adapter sequences from the raw fastq reads by [cutadapt](https://cutadapt.readthedocs.io/en/stable/) in the same way the GCF does for alignments. Further, a filter on the mapping quality (MAPQ) is applied and duplicated reads are marked. Zwart lab filter is MQ20. Changing this filter is not advised, but possible in the `configfile_DNAmapping.yaml` file if necessary. Notice that in the case of paired-end reads, when present, UMIs (Unique Molecule Identifiers) sequence is added to the index sequences in the read name. This is allows the marking of the duplicated reads in a UMI-aware manner (reads/fragments that have exactly the same sequence but different UMI-sequence are not marked as duplicates).
 
 Additional information must be provided to the pipeline in the command line:
 * the source fastq directory
 * the output directory where you want your results to be stored (if not already available, the pipeline will make it for you)
 * whether your data are paired- or single-end
-* the genome to use (available options: `hg38`, `hg19`, `hg38_ucsc`, `hg19_ucsc`, `mm10`, `mm9`, `rn6`)
+* the genome to use (available options: a) GCF-genomes: `hg38`, `hg19`, `rn6`; b) UCSC-genomes: `hg38_ucsc`, `hg19_ucsc`, `mm10`, `mm9`)
 
 All the other parameters are already available in the `configfile_DNAmapping.yaml` file or hard-coded in the snakemake file.
 
@@ -209,7 +210,7 @@ rename_zwart="True"
 ```
 (the `\` must be used every time you go to a new line)
 
-_**NOTE**_: remember that the genome used for the conversion must match with the one used to generate the crams. Hence, if the crams do not come from the NKI-GCF please ask for assistance. Available options for the genome are:  `hg38`, `hg19`, `hg38_ucsc`, `hg19_ucsc`, `mm10`, `mm9`, `rn6`.
+_**NOTE**_: remember that the genome used for the conversion must match with the one used to generate the crams. Hence, if the crams do not come from the NKI-GCF please ask for assistance. Available options for the genome are: a) GCF-genomes: `hg38`, `hg19`, `rn6`; b) UCSC-genomes: `hg38_ucsc`, `hg19_ucsc`, `mm10`, `mm9`.
 
 <hr style="border:2px solid blue">
 
@@ -218,7 +219,7 @@ _**NOTE**_: remember that the genome used for the conversion must match with the
 <br/><br/>
 
 ### 3.3. ChIP-seq peak calling <a name="peakcalling"></a>
-To facilitate the analyses of the ChIP-seq analyses in the Zwart lab, it is strongly recommended to rename your files so that the files contain the wz number. <br> If your already run the `cramToBam` pipeline with the `rename_zwart="True"` flag, this renaming step has been already done. <br> Otherwise, to do that you can find the original section [*Renaming files*](https://github.com/csijcs/snakepipes#renaming-files) from [*Joe's GitHub*](https://github.com/csijcs/snakepipes#renaming-files) also in this repository at [`resources/renaming_wzNumbers_Joe`](https://github.com/sebastian-gregoricchio/ChIP_Zwart/tree/main/resources/renaming_wzNumbers_Joe). More details and the [`rename_files.R`](https://github.com/sebastian-gregoricchio/ChIP_Zwart/tree/main/resources/renaming_wzNumbers_Joe/rename_files.R) script can be found in [`this folder`](https://github.com/sebastian-gregoricchio/ChIP_Zwart/tree/main/resources/renaming_wzNumbers_Joe) as well.
+To facilitate the analyses of the ChIP-seq analyses in the Zwart lab, it is strongly recommended to rename your files so that the files contain the wz number. <br> If your already run the `cramToBam` pipeline with the `rename_zwart="True"` flag, this renaming step has been already done. <br> Otherwise, to do that you can find the original section [*Renaming files*](https://github.com/csijcs/snakepipes#renaming-files) from [*Joe's GitHub*](https://github.com/csijcs/snakepipes#renaming-files) also in this repository at [`resources/renaming_wzNumbers_Joe`](https://github.com/sebastian-gregoricchio/ChIP_Zwart/tree/main/resources/renaming_wzNumbers_Joe). More details and the [`rename_files.R`](https://github.com/sebastian-gregoricchio/ChIP_Zwart/tree/main/resources/renaming_wzNumbers_Joe/rename_files.R) script can be found in [`this folder`](https://github.com/sebastian-gregoricchio/ChIP_Zwart/tree/main/resources/renaming_wzNumbers_Joe) as well. Briefly, to run the script, move it to your folder with your bams or fastqs and run `Rscript rename.R`.
 
 The pipeline requires a sample configuration file which provides information about ChIP-Input pairs and the type of peak calling to perform (broad or narrow). <br>
 This configuration file must be in a tab-delimited txt file format (with column names) containing the following information (respect the column order):
@@ -248,6 +249,22 @@ To partially avoid unexpected errors during the execution of the pipeline, a so 
 **_NOTE_**: if the bam files derive from the [DNA-mapping pipeline](#dnamapping) you can save time by adding the flag `skip_bam_filtering="True"` (MAPQ filter and MarkDuplicates are skipped). Notice that you may need to add/modify the flag for the bam suffix to `bam_suffix="_mapq20_mdup_sorted.bam"` in order to match the extension of the output files of the [DNA-mapping pipeline](#dnamapping).
 
 
+**Single-end** (the `\` must be used every time you go to a new line)
+```shell
+snakemake \
+--cores 10 \
+-s </target/folder>/ChIP_Zwart/workflow/peakcalling.snakefile \
+--configfile </target/folder>/ChIP_Zwart/config/configfile_peakCalling.yaml \
+--config \
+runs_directory="/path/to/rename" \
+output_directory="/path/to/results/directory/" \
+sample_config_table="/path/to/sample_configuration.txt" \
+paired_end="False" \
+genome="hg19" \
+-n
+```
+
+
 **Paired-end** (the `\` must be used every time you go to a new line)
 ```shell
 snakemake \
@@ -264,20 +281,6 @@ genome="hg38" \
 -n
 ```
 
-**Single-end** (the `\` must be used every time you go to a new line)
-```shell
-snakemake \
---cores 10 \
--s </target/folder>/ChIP_Zwart/workflow/peakcalling.snakefile \
---configfile </target/folder>/ChIP_Zwart/config/configfile_peakCalling.yaml \
---config \
-runs_directory="/path/to/rename" \
-output_directory="/path/to/results/directory/" \
-sample_config_table="/path/to/sample_configuration.txt" \
-paired_end="False" \
-genome="hg19" \
--n
-```
 
 If no errors occur, the pipeline can be run with the same command but without the final `-n` flag:
 
@@ -289,24 +292,23 @@ Notice that the absence of errors does not mean that the pipeline will run witho
 #### 3.3.1. Peak calling workflow <a name="peakcallingworkflow"></a>
 Here after you can see the full potential workflow of the paired-end and single-end ChIP-seq pipeline:
 
-**a) PAIRED-END**
-![PE workflow](https://raw.githubusercontent.com/sebastian-gregoricchio/ChIP_Zwart/main/resources/peakcalling_workflow_PE.png)
-
-<br/><br/>
-
-**b) SINGLE-END**
+**a) SINGLE-END**
 ![PE workflow](https://raw.githubusercontent.com/sebastian-gregoricchio/ChIP_Zwart/main/resources/peakcalling_workflow_SE.png)
 
 <br/><br/>
 
+**b) PAIRED-END**
+![PE workflow](https://raw.githubusercontent.com/sebastian-gregoricchio/ChIP_Zwart/main/resources/peakcalling_workflow_PE.png)
+
+<br/><br/>
 
 
 #### 3.3.2. Peak calling results <a name="peakcallingresults"></a>
 The results structure is the following:
 * *01_BAM_filtered* -> bams filtered for mapping quality (MAPQ) and with the duplicates marked/removed
 * *02_fastQC_on_BAM_filtered* -> individual fastQC for each filtered bam
-* *03_bigWig_bamCoverage* -> bigWig of the bam coverage normalized ([RCPG](https://deeptools.readthedocs.io/en/develop/content/help_glossary.html?highlight=RPGC#abbreviations) = Reads Per Genomic Content) or not (raw_coverage) depending on the sequencing depth
-* *04_Called_peaks* -> peaks called with macs (de-blacklisted). If single-end also a folder with the output of [`phantompeakqualtools`](https://www.encodeproject.org/software/phantompeakqualtools/). If the bed file does not contain already the 'chr' for the "canonical" chromosomes, it will be added in a separated file
+* *03_bigWig_bamCoverage* -> bigWig of the bam coverage normalized ([RPGC](https://deeptools.readthedocs.io/en/develop/content/help_glossary.html?highlight=RPGC#abbreviations) = Reads Per Genomic Content) or not (raw_coverage) depending on the sequencing depth
+* *04_Called_peaks* -> peaks called with macs2 (de-blacklisted in hg38 but not hg19 - for backwards compatibility of older Zwart lab data -). If single-end, it can be found also a folder with the output of [`phantompeakqualtools`](https://www.encodeproject.org/software/phantompeakqualtools/) as the calculated fragment length is used for running macs2 with single-end data. If the bed file does not contain already the 'chr' for the "canonical" chromosomes, it will be added in a separated file ending by `_chr.narrow/broadPeak`
 * *05_Quality_controls_and_statistics* -> this folder contains sample correlations heatmaps and PCAs, a multiQC report containing multiple info (number of reads, duplicates, peak counts and fragmenth lenght, phantom results), statistics on the called peaks (FRiP, number, etc.)
 
 
@@ -378,7 +380,7 @@ Hereafter there are some details of additional parameters available in the `conf
 | *umi_present* | Default: `True`. True/False to indicate whether the data contain UMIs (ignored for single-end data). |
 | *remove_duplicates* | Default: `False`. True/False to define whether remove the duplicates from the bam files (if true the tag in the bams will be *_dedup* instead of *_mdup*). |
 | *MAPQ_threshold* | Default: `20`. All reads with a mapping quality (MAPQ) score lower than this value will be filtered out from the bam files. |
-| *bigWig_binSize* | Default: `10`. Size, in bp, of the bins used to compute the normalized bigWig files. |
+| *bigWig_binSize* | Default: `50`. Size, in bp, of the bins used to compute the normalized bigWig files. |
 | *use_macs3* | Default: `False`. True/False to define whether to run [macs3](https://github.com/macs3-project) instead of [macs2](https://pypi.org/project/MACS2/). |
 | *macs_qValue_cutoff* | Default: `0.01`. False Discovery Ratio (FDR) (q-value) cutoff used by [MACS](https://github.com/macs3-project/MACS) to filter the significant peaks. |
 | *perform_plotFingerprint* | Default: `False`. True/False to define whether perform the finger printing (Lorenz curve). |
