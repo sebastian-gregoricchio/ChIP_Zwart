@@ -783,7 +783,7 @@ if ((eval(str(config["paired_end"])) == True)):
             """
             mkdir -p 05_Quality_controls_and_statistics/multiQC/
 
-            $CONDA_PREFIX/bin/multiqc \
+            $CONDA_PREFIX/bin/multiqc -f \
             -o {params.out_directory} \
             -n {params.multiqc_report_name} \
             --dirs 02_fastQC_on_BAM_filtered {params.picard_metrics_dir} 01_BAM_filtered/flagstat 04_Called_peaks > {log.err} 2> {log.out}
@@ -812,7 +812,7 @@ else:
 
             mkdir -p 05_Quality_controls_and_statistics/multiQC/
 
-            $CONDA_PREFIX/bin/multiqc \
+            $CONDA_PREFIX/bin/multiqc -f \
             -o {params.out_directory} \
             -n {params.multiqc_report_name} \
             --dirs 02_fastQC_on_BAM_filtered {params.picard_metrics_dir} 01_BAM_filtered/flagstat 04_Called_peaks > {log.err} 2> {log.out}

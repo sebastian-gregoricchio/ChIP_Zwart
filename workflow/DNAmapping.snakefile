@@ -412,7 +412,7 @@ rule multiQC_bam:
 
         mkdir -p {params.out_directory}
 
-        $CONDA_PREFIX/bin/multiqc \
+        $CONDA_PREFIX/bin/multiqc -f \
         -o {params.out_directory} \
         -n {params.multiqc_bam_report_name} \
         --dirs 02_BAM/MarkDuplicates_metrics 02_BAM/flagstat > {log.err} 2> {log.out}
@@ -461,7 +461,7 @@ rule multiQC_trimmed_fastq:
 
         cd {params.fastqc_zip_dir}
 
-        $CONDA_PREFIX/bin/multiqc \
+        $CONDA_PREFIX/bin/multiqc -f \
         -o {params.out_directory} \
         -n {params.multiqc_fastqc_report_name} \
         --dirs-depth 2 \
