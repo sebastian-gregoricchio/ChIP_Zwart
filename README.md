@@ -93,7 +93,7 @@ To partially avoid unexpected errors during the execution of the pipeline, a so 
 ```shell
 snakemake \
 --cores 20 \
--s </target/folder>/ChIP_Zwart/workflow//DNAmapping.snakefile \
+-s </target/folder>/ChIP_Zwart/workflow/DNAmapping.snakefile \
 --configfile </target/folder>/ChIP_Zwart/config/configfile_DNAmapping.yaml \
 --config \
 fastq_directory="/path/to/pairedEnd/fastq_data" \
@@ -107,7 +107,7 @@ genome="hg38" \
 ```shell
 snakemake \
 --cores 20 \
--s </target/folder>/ChIP_Zwart/workflow//DNAmapping.snakefile \
+-s </target/folder>/ChIP_Zwart/workflow/DNAmapping.snakefile \
 --configfile </target/folder>/ChIP_Zwart/config/configfile_DNAmapping.yaml \
 --config \
 fastq_directory="/path/to/singleEnd/fastq_data" \
