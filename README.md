@@ -245,7 +245,7 @@ All the other parameters are already available in the `configfile_peakcalling.ya
 To partially avoid unexpected errors during the execution of the pipeline, a so called 'dry-run' is strongly recommended. Indeed, adding a `-n` flag at the end of the snakemake running command will allow snakemake to check that all links and file/parameters dependencies are satisfied before to run the "real" processes. This command will therefore help the debugging process. <br>
 *Always activate your environment, otherwise the pipeline won't be able to find the packages required for the analyses.*
 
-**_NOTE_**: if the bam files derive from the [DNA-mapping pipeline](#dnamapping) you can save time by adding the flag `skip_bam_filtering="True"` (MAPQ filter and MarkDuplicates are skipped). Notice that you may need to add/modify the flag for the bam suffix to `bam_suffix="_mdup_sorted.bam"` in order to match the extension of the output files of the [DNA-mapping pipeline](#dnamapping).
+**_NOTE_**: if the bam files derive from the [DNA-mapping pipeline](#dnamapping) you can save time by adding the flag `skip_bam_filtering="True"` (MAPQ filter and MarkDuplicates are skipped). Notice that you may need to add/modify the flag for the bam suffix to `bam_suffix="_mapq20_mdup_sorted.bam"` in order to match the extension of the output files of the [DNA-mapping pipeline](#dnamapping).
 
 
 **Paired-end** (the `\` must be used every time you go to a new line)
