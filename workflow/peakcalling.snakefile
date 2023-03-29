@@ -623,7 +623,8 @@ if ((eval(str(config["paired_end"])) == True)):
     rule macs_callpeak_PE:
         input:
             target_bam = os.path.join("01_BAM_filtered", ''.join(["{TARGET}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bam"])),
-            target_bai = os.path.join("01_BAM_filtered", ''.join(["{TARGET}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bai"]))
+            target_bai = os.path.join("01_BAM_filtered", ''.join(["{TARGET}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bai"])),
+            input_bam_all = expand(os.path.join("01_BAM_filtered", ''.join(["{input}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bam"])), input = INPUTNAMES),
         output:
             peaksPE = "04_Called_peaks/{TARGET}.filtered.BAMPE_peaks.xls"
         params:
@@ -669,7 +670,8 @@ else:
     rule phantom_SE:
         input:
             target_bam = os.path.join("01_BAM_filtered", ''.join(["{TARGET}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bam"])),
-            target_bai = os.path.join("01_BAM_filtered", ''.join(["{TARGET}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bai"]))
+            target_bai = os.path.join("01_BAM_filtered", ''.join(["{TARGET}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bai"])),
+            input_bam_all = expand(os.path.join("01_BAM_filtered", ''.join(["{input}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bam"])), input = INPUTNAMES)
         output:
             phantom = '04_Called_peaks/phantom/{TARGET}.phantom.spp.out'
         log:
@@ -711,6 +713,7 @@ else:
         input:
             target_bam = os.path.join("01_BAM_filtered", ''.join(["{TARGET}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bam"])),
             target_bai = os.path.join("01_BAM_filtered", ''.join(["{TARGET}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bai"])),
+            input_bam_all = expand(os.path.join("01_BAM_filtered", ''.join(["{input}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_sorted.bam"])), input = INPUTNAMES),
             phantom = '04_Called_peaks/phantom/{TARGET}.fragment_length'
         output:
             peaksSE = "04_Called_peaks/{TARGET}.filtered.BAM_peaks.xls"
