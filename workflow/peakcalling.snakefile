@@ -72,8 +72,11 @@ SAMPLENAMES = list(numpy.unique(TARGETNAMES + INPUTNAMES))
 
 
 # Get bam list
-BAMS = next(os.walk(config["runs_directory"]))[2]
-RUNNAMES = numpy.unique([re.sub(rf"{config['bam_suffix']}$", "", i) for i in BAMS])
+if not (os.path.exists(config["runs_directory"])):
+    os.system("printf '\033[1;31m\\n!!! *runs_directory* does not exist !!!\\n\\n\033[0m'")
+else:
+    BAMS = next(os.walk(config["runs_directory"]))[2]
+    RUNNAMES = numpy.unique([re.sub(rf"{config['bam_suffix']}$", "", i) for i in BAMS])
 
 
 
