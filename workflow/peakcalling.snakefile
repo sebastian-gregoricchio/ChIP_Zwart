@@ -681,6 +681,8 @@ else:
             genomeSize = genomeSize,
             macs_qValue_cutoff = config["macs_qValue_cutoff"],
             blacklist = blacklist
+        threads:
+            workflow.cores
         shell:
             """
             printf '\033[1;36m{params.sample}: calculating phantom peak...\\n\033[0m'
@@ -698,8 +700,6 @@ else:
             phantom = '04_Called_peaks/phantom/{TARGET}.phantom.spp.out'
         output:
             fragment_length_phanthom = temp('04_Called_peaks/phantom/{TARGET}.fragment_length')
-        threads:
-            workflow.cores
         shell:
             """
             awk '{{print $3}}' < {input.phantom} | tr ',' '\\t' | awk '{{if($1!=0) print $1; else print $2}}' > {output.fragment_length_phanthom}
