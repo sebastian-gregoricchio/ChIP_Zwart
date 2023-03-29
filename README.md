@@ -28,7 +28,7 @@
     1. [Package history and releases](#history)
     2. [Contact](#contact)
     3. [License](#license)
-    4. [Contributors](#contributors)
+    4. [Contributors](#contributors) 
 
 <hr style="border:2px">
 
