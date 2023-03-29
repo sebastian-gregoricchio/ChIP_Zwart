@@ -698,6 +698,8 @@ else:
             phantom = '04_Called_peaks/phantom/{TARGET}.phantom.spp.out'
         output:
             fragment_length_phanthom = temp('04_Called_peaks/phantom/{TARGET}.fragment_length')
+        threads:
+            workflow.cores
         shell:
             """
             awk '{{print $3}}' < {input.phantom} | tr ',' '\\t' | awk '{{if($1!=0) print $1; else print $2}}' > {output.fragment_length_phanthom}
