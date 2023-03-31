@@ -75,6 +75,7 @@ dependencies:
   - coloredlogs=15.0.1=py38h06a4308_1
   - colormath=3.0.0=py_2
   - commonmark=0.9.1=pyhd3eb1b0_0
+  - conda-ecosystem-user-package-isolation=1.0=ha770c72_1
   - configargparse=1.4=pyhd3eb1b0_0
   - connection_pool=0.0.3=pyhd3deb0d_0
   - contourpy=1.0.5=py38hdb19cb5_0
