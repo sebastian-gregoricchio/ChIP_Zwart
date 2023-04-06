@@ -228,7 +228,7 @@ if (paired & (eval(str(config["umi_present"])) == True)):
               print $0 u
             }}' |
 	          samtools fixmate -m - - |
-            samtools sort -m 2G -T 02_BAM/{params.sample} -@ 2 -O bam - > {output.bam} 2> {log.out};
+            samtools sort -m 2G -T 02_BAM/{params.sample} -@ {threads} -O bam - > {output.bam} 2> {log.out};
             samtools flagstat {output.bam} > {output.align_summary}
             """
 
