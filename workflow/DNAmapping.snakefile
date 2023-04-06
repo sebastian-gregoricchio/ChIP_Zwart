@@ -285,7 +285,7 @@ else:
 
             ${{CONDA_PREFIX}}/bin/{params.bwa} mem \
             -M -t {threads} {params.bwa_opts} \
-            -p {params.genome_fasta} {input.R1_trimm} 2> {output.align_summary} | samtools view -Sbu - | samtools sort -m 2G -T 02_BAM/{params.sample} -@ 2 -O bam - > {output.bam}
+            -p {params.genome_fasta} {input.R1_trimm} 2> {output.align_summary} | samtools view -Sbu - | samtools sort -m 2G -T 02_BAM/{params.sample} -@ {threads} -O bam - > {output.bam}
             """
 
 
