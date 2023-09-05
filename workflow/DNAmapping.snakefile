@@ -151,7 +151,8 @@ if paired:
         log:
             out = "01_trimmed_fastq/logs/cutadapt.{SAMPLE}.out",
             err = "01_trimmed_fastq/logs/cutadapt.{SAMPLE}.err"
-        threads: 8
+        threads:
+            workflow.cores
         shell:
             """
             printf '\033[1;36m{params.sample}: reads trimming...\\n\033[0m'
@@ -176,7 +177,8 @@ else:
         log:
             out = "01_trimmed_fastq/logs/cutadapt.{SAMPLE}.out",
             err = "01_trimmed_fastq/logs/cutadapt.{SAMPLE}.err"
-        threads: 8
+        threads:
+            workflow.cores
         shell:
             """
             printf '\033[1;36m{params.sample}: reads trimming...\\n\033[0m'
@@ -306,7 +308,7 @@ rule MAPQ_filter:
         sample = "{SAMPLE}",
         MAPQ_threshold = config["MAPQ_threshold"]
     threads:
-        math.ceil(workflow.cores/len(SAMPLENAMES))
+        max(math.floor(workflow.cores/len(SAMPLENAMES)), 1)
     shell:
         """
         printf '\033[1;36m{params.sample}: filtering MAPQ and re-indexing...\\n\033[0m'
@@ -410,7 +412,7 @@ rule multiQC_bam:
         out = "03_quality_controls/multiQC_bam_filtered/multiQC_bam_filtered.out",
         err = "03_quality_controls/multiQC_bam_filtered/multiQC_bam_filtered.err"
     threads:
-        math.ceil(workflow.cores/len(SAMPLENAMES))
+        max(math.floor(workflow.cores/len(SAMPLENAMES)), 1)
     shell:
         """
         printf '\033[1;36mPerforming multiQC on filtered bam flagstat/picard...\\n\033[0m'
