@@ -2,11 +2,16 @@
 ##    Snakefile for CRAM to BAM    ##
 #####################################
 
+import os
+conda_prefix = str(os.environ["CONDA_PREFIX"])
+
+import sys
+sys.path.insert(1, conda_prefix+"/lib/python"+str(sys.version_info[0])+"."+str(sys.version_info[1])+"/site-packages")
+
 from typing import List
 import pathlib
 import re
 import numpy
-import os
 import pandas as pd
 import math
 import glob
@@ -17,10 +22,10 @@ from itertools import combinations
 genomes_table = pd.DataFrame({'genome_id': ['hg38', 'hg19', 'hg38_ucsc', 'hg19_ucsc', 'mm10', 'mm9', 'rn6'],
                               'fasta': ['/shared/data/Zwartlab/snakepipes_indices/hg38/BWAIndex/genome.fa',
                                         '/shared/data/Zwartlab/snakepipes_indices/hg19/BWAIndex/genome.fa',
-                                        '/home/s.gregoricchio/annotations/genomes/Hg19_UCSC/one_file_fasta/hg19.fa.gz',
-                                        'hg38_ucsc',
+                                        '/home/s.gregoricchio/annotations/genomes/Hg38_UCSC/one_file_fasta/Hg38_UCSC.fa',
+                                        '/home/s.gregoricchio/annotations/genomes/Hg19_UCSC/one_file_fasta/hg19.fa',
                                         '/home/s.gregoricchio/annotations/genomes/Mm10/one_file_fasta/Mus_musculus_GRCm38_Mm10_GCA_000001635.2_UCSC.fa',
-                                        'mm10_ucsc',
+                                        'mm9_ucsc',
                                         '/shared/data/Zwartlab/snakepipes_indices/Rnor_6.0/BWAIndex/Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa']})
 
 # Define general variables
