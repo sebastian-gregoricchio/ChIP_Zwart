@@ -6,9 +6,10 @@ title: "changeLog"
 [![forks](https://img.shields.io/github/forks/sebastian-gregoricchio/ChIP_Zwart?style=social)](https://github.com/sebastian-gregoricchio/ChIP_Zwart/fork)
 
 
-#### [v0.1.2](https://github.com/sebastian-gregoricchio/ChIP_Zwart/releases/tag/0.1.2) - September 5<sup>th</sup> 2023
-* Optimization of the threads management in the DNA-mapping rule
-* Bug fixing for the path to use to load python modules in the snakemake (workflow) files
+#### [v0.1.2](https://github.com/sebastian-gregoricchio/ChIP_Zwart/releases/tag/0.1.2) - September 7<sup>th</sup> 2023
+* Optimization of the threads management in the workflow snakefiles
+* Adding a comment for eventual bug fixing for the path to use to load python modules in the snakemake (workflow) files
+* Added `$CONDA_PREFIX/bin/` behind each tool to avoid wrong assignment of the tool path
 
 
 #### [v0.1.1](https://github.com/sebastian-gregoricchio/ChIP_Zwart/releases/tag/0.1.1) - March 31<sup>st</sup> 2023
