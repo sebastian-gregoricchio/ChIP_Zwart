@@ -131,7 +131,7 @@ rule B_cram_to_bam:
         genome_fasta = genome_fasta,
         log_dir = os.path.join(config["bam_out_directory"], "log_cramToBam/")
     threads:
-        math.ceil(workflow.cores/len(CRAMNAMES))
+        max(math.floor(workflow.cores/len(CRAMNAMES)), 1)
     log:
         out = os.path.join(config["bam_out_directory"], "log_cramToBam/{CRAMS}_cramToBam_samtools.log")
     shell:
@@ -140,8 +140,8 @@ rule B_cram_to_bam:
 
         mkdir -p {params.log_dir}
 
-        samtools view -@ {threads} -b -T {params.genome_fasta} -o {output.bam} {input.cram} &> {log.out}
-        samtools index -@ {threads} -b {output.bam} {output.bam_bai}
+        $CONDA_PREFIX/bin/samtools view -@ {threads} -b -T {params.genome_fasta} -o {output.bam} {input.cram} &> {log.out}
+        $CONDA_PREFIX/bin/samtools index -@ {threads} -b {output.bam} {output.bam_bai}
         """
 
 

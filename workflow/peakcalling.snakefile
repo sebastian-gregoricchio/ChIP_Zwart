@@ -215,15 +215,15 @@ if (eval(str(config["skip_bam_filtering"])) == False):
             sample = "{SAMPLE}",
             MAPQ_threshold = config["MAPQ_threshold"]
         threads:
-            math.ceil(workflow.cores/len(SAMPLENAMES))
+            max(math.floor(workflow.cores/len(SAMPLENAMES)), 1)
         shell:
             """
             printf '\033[1;36m{params.sample}: filtering MAPQ and re-indexing...\\n\033[0m'
 
-            samtools view -@ {threads} -h -q {params.MAPQ_threshold} {input.source_bam} -o {output.bam_mapq_only}
+            $CONDA_PREFIX/bin/samtools view -@ {threads} -h -q {params.MAPQ_threshold} {input.source_bam} -o {output.bam_mapq_only}
 
-            samtools sort -@ {threads} {output.bam_mapq_only} -o {output.bam_mapq_only_sorted}
-            samtools index -@ {threads} -b {output.bam_mapq_only_sorted} {output.bam_mapq_only_sorted_index}
+            $CONDA_PREFIX/bin/samtools sort -@ {threads} {output.bam_mapq_only} -o {output.bam_mapq_only_sorted}
+            $CONDA_PREFIX/bin/samtools index -@ {threads} -b {output.bam_mapq_only_sorted} {output.bam_mapq_only_sorted_index}
             """
 
 
@@ -255,7 +255,7 @@ if (eval(str(config["skip_bam_filtering"])) == False):
                 mkdir -p 01_BAM_filtered/MarkDuplicates_logs
                 mkdir -p 01_BAM_filtered/flagstat
 
-                gatk UmiAwareMarkDuplicatesWithMateCigar \
+                $CONDA_PREFIX/bin/gatk UmiAwareMarkDuplicatesWithMateCigar \
                 --INPUT {input.bam_mapq_only_sorted} \
                 --OUTPUT {output.bam_mdup} \
                 --REMOVE_DUPLICATES {params.remove_duplicates} \
@@ -294,7 +294,7 @@ if (eval(str(config["skip_bam_filtering"])) == False):
                 mkdir -p 01_BAM_filtered/MarkDuplicates_logs
                 mkdir -p 01_BAM_filtered/flagstat
 
-                gatk MarkDuplicatesWithMateCigar \
+                $CONDA_PREFIX/bin/gatk MarkDuplicatesWithMateCigar \
                 --INPUT {input.bam_mapq_only_sorted} \
                 --OUTPUT {output.bam_mdup} \
                 --REMOVE_DUPLICATES {params.remove_duplicates} \
@@ -302,7 +302,7 @@ if (eval(str(config["skip_bam_filtering"])) == False):
                 --CREATE_INDEX true \
                 --METRICS_FILE {output.dup_metrics} 2> {log.out} > {log.err}
 
-                samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
+                $CONDA_PREFIX/bin/samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
                 """
 else:
     rule bam_link__skip_filtering:
@@ -315,7 +315,7 @@ else:
         params:
             sample = "{SAMPLE}"
         threads:
-            math.ceil(workflow.cores/len(SAMPLENAMES))
+            max(math.floor(workflow.cores/len(SAMPLENAMES)), 1)
         shell:
             """
             printf '\033[1;36m{params.sample} (skip filtering): linking bam, indexing and computing flagstat...\\n\033[0m'
@@ -324,9 +324,9 @@ else:
 
             BAM_REAL=$(realpath {input.source_bam})
             ln -s $BAM_REAL {output.bam_mdup}
-            samtools index -@ {threads} -b {output.bam_mdup} {output.bai_mdup}
+            $CONDA_PREFIX/bin/samtools index -@ {threads} -b {output.bam_mdup} {output.bai_mdup}
 
-            samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
+            $CONDA_PREFIX/bin/samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
             """
 
 
@@ -342,13 +342,13 @@ rule fastQC_filtered_BAM:
         fastQC_BAMs_outdir = os.path.join("02_fastQC_on_BAM_filtered/"),
         sample = "{SAMPLE}"
     threads:
-        math.ceil(workflow.cores/len(SAMPLENAMES))
+        max(math.floor(workflow.cores/len(SAMPLENAMES)), 1)
     shell:
         """
         mkdir -p 02_fastQC_on_BAM_filtered
 
         printf '\033[1;36m{params.sample}: Performing fastQC on deduplicated bam...\\n\033[0m'
-        fastqc -t {threads} --outdir {params.fastQC_BAMs_outdir} {input.bam_mapq}
+        $CONDA_PREFIX/bin/fastqc -t {threads} --outdir {params.fastQC_BAMs_outdir} {input.bam_mapq}
         """
 
 # ------------------------------------------------------------------------------
@@ -367,7 +367,7 @@ rule plotFingerprint:
         read_extension = read_extension,
         blacklist = blacklist
     threads:
-        math.ceil(workflow.cores/len(TARGETNAMES))
+        max(math.floor(workflow.cores/len(TARGETNAMES)), 1)
     log:
         out = "05_Quality_controls_and_statistics/plotFingerprint/logs/{TARGET}_fingerPrinting_log.out",
         err = "05_Quality_controls_and_statistics/plotFingerprint/logs/{TARGET}_fingerPrinting_log.err"
@@ -380,7 +380,7 @@ rule plotFingerprint:
 
         INPUT_ID=$(grep {params.sample} {params.sample_config_table} | cut -f 2)
 
-        plotFingerprint \
+        $CONDA_PREFIX/bin/plotFingerprint \
         -b {input.target_bam} \
         01_BAM_filtered/${{INPUT_ID}}{params.input_suffix} \
         --JSDsample 01_BAM_filtered/${{INPUT_ID}}{params.input_suffix} \
@@ -417,7 +417,7 @@ rule fragmentSizeDistribution:
 
         mkdir -p 05_Quality_controls_and_statistics/fragmentSize_distribution/logs
 
-        bamPEFragmentSize \
+        $CONDA_PREFIX/bin/bamPEFragmentSize \
         --bamfiles {input.all_bams} \
         --binSize 1000000 \
         --blackListFileName {params.blacklist} \
@@ -444,7 +444,7 @@ rule normalized_bigWig:
         read_extension = read_extension,
         bw_binSize = config["bigWig_binSize"]
     threads:
-        math.ceil(workflow.cores/len(SAMPLENAMES))
+        max(math.floor(workflow.cores/len(SAMPLENAMES)), 1)
     log:
         out = "03_bigWig_bamCoverage/RPGC_normalized/logs/{SAMPLE}_fragmentSize_distribution_log.out",
         err = "03_bigWig_bamCoverage/RPGC_normalized/logs/{SAMPLE}_fragmentSize_distribution_log.err"
@@ -454,7 +454,7 @@ rule normalized_bigWig:
 
         mkdir -p 03_bigWig_bamCoverage/RPGC_normalized/logs
 
-        bamCoverage \
+        $CONDA_PREFIX/bin/bamCoverage \
         -b {input.bam} \
         -o {output.normalized_bigWig} \
         --binSize {params.bw_binSize} \
@@ -483,7 +483,7 @@ rule raw_bigWig:
         read_extension = read_extension,
         bw_binSize = config["bigWig_binSize"]
     threads:
-        math.ceil(workflow.cores/len(SAMPLENAMES))
+        max(math.floor(workflow.cores/len(SAMPLENAMES)), 1)
     log:
         out = "03_bigWig_bamCoverage/raw_coverage/logs/{SAMPLE}_fragmentSize_distribution_log.out",
         err = "03_bigWig_bamCoverage/raw_coverage/logs/{SAMPLE}_fragmentSize_distribution_log.err"
@@ -493,7 +493,7 @@ rule raw_bigWig:
 
         mkdir -p 03_bigWig_bamCoverage/raw_coverage/logs
 
-        bamCoverage \
+        $CONDA_PREFIX/bin/bamCoverage \
         -b {input.bam} \
         -o {output.raw_bigWig} \
         --binSize {params.bw_binSize} \
@@ -528,7 +528,7 @@ rule multiBigwigSummary_wholeGenome:
 
         mkdir -p 05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/logs
 
-        multiBigwigSummary bins \
+        $CONDA_PREFIX/bin/multiBigwigSummary bins \
         -b {input.all_norm_bigwig} \
         -o {output.multiBigWig_matrix_wholeGenome} \
         --labels {params.labels} \
@@ -561,7 +561,7 @@ rule correlations_wholeGenome:
         """
         printf '\033[1;36mPlotting sample correlations (whole genome)...\\n\033[0m'
 
-        plotCorrelation \
+        $CONDA_PREFIX/bin/plotCorrelation \
         -in {input.multiBigWig_matrix_wholeGenome} \
         --labels {params.labels} \
         --corMethod pearson \
@@ -574,7 +574,7 @@ rule correlations_wholeGenome:
         --colorMap {params.heatmap_color} > {log.out_pearson} 2> {log.err_pearson}
 
 
-        plotCorrelation \
+        $CONDA_PREFIX/bin/plotCorrelation \
         -in {input.multiBigWig_matrix_wholeGenome} \
         --labels {params.labels} \
         --corMethod spearman \
@@ -610,14 +610,14 @@ rule PCA_wholeGenome:
         """
         printf '\033[1;36mPlotting PCA (whole genome)...\\n\033[0m'
 
-        plotPCA \
+        $CONDA_PREFIX/bin/plotPCA \
         -in {input.multiBigWig_matrix_wholeGenome} \
         --labels {params.labels} \
         --PCs 1 2 \
         --plotTitle 'PCA whole genome: PC1 vs PC2 (RPGC normalized coverage)' \
         --plotFile {output.PCA_wholeGenome_12} > {log.out_12} 2> {log.err_12}
 
-        plotPCA \
+        $CONDA_PREFIX/bin/plotPCA \
         -in {input.multiBigWig_matrix_wholeGenome} \
         --labels {params.labels} \
         --PCs 2 3 \
@@ -645,7 +645,7 @@ if ((eval(str(config["paired_end"])) == True)):
             macs_qValue_cutoff = config["macs_qValue_cutoff"],
             blacklist = blacklist
         threads:
-            math.ceil(workflow.cores/len(TARGETNAMES))
+            max(math.floor(workflow.cores/len(TARGETNAMES)), 1)
         log:
             out = "04_Called_peaks/logs/{TARGET}_macs.callpeak.BAMPE_log.out",
             err = "04_Called_peaks/logs/{TARGET}_macs.callpeak.BAMPE_log.err"
@@ -664,7 +664,7 @@ if ((eval(str(config["paired_end"])) == True)):
                 BROAD="--broad"
             fi
 
-            {params.macs_version} callpeak \
+            $CONDA_PREFIX/bin/{params.macs_version} callpeak \
             -t {input.target_bam} \
             -c 01_BAM_filtered/${{INPUT_ID}}{params.input_suffix} \
             -f BAMPE \
@@ -734,7 +734,7 @@ else:
             macs_qValue_cutoff = config["macs_qValue_cutoff"],
             blacklist = blacklist
         threads:
-            math.ceil(workflow.cores/len(TARGETNAMES))
+            max(math.floor(workflow.cores/len(TARGETNAMES)), 1)
         log:
             out = "04_Called_peaks/logs/{TARGET}_macs.callpeak.BAM_log.out",
             err = "04_Called_peaks/logs/{TARGET}_macs.callpeak.BAM_log.err"
@@ -753,7 +753,7 @@ else:
                 BROAD="--broad"
             fi
 
-            {params.macs_version} callpeak \
+            $CONDA_PREFIX/bin/{params.macs_version} callpeak \
             -t {input.target_bam} \
             -c 01_BAM_filtered/${{INPUT_ID}}{params.input_suffix} \
             -f BAM \
@@ -862,7 +862,7 @@ if ((eval(str(config["paired_end"])) == True)):
 
             sort -V -k1,1 -k2,2 {output.concat_peaks} > {output.concat_peaks_sorted}
 
-            bedtools merge -i {output.concat_peaks_sorted} | sort -V -k1,1 -k2,2 > {output.merged_peaks_sorted}
+            $CONDA_PREFIX/bin/bedtools merge -i {output.concat_peaks_sorted} | sort -V -k1,1 -k2,2 > {output.merged_peaks_sorted}
             """
 else:
     rule merge_all_peaks_SE:
@@ -893,7 +893,7 @@ else:
 
             sort -V -k1,1 -k2,2 {output.concat_peaks} > {output.concat_peaks_sorted}
 
-            bedtools merge -i {output.concat_peaks_sorted} | sort -V -k1,1 -k2,2 > {output.merged_peaks_sorted}
+            $CONDA_PREFIX/bin/bedtools merge -i {output.concat_peaks_sorted} | sort -V -k1,1 -k2,2 > {output.merged_peaks_sorted}
             """
 
 
@@ -919,7 +919,7 @@ rule multiBigwigSummary_atPeaks:
 
         mkdir -p 05_Quality_controls_and_statistics/sample_comparisons_atPeaks/logs
 
-        multiBigwigSummary BED-file \
+        $CONDA_PREFIX/bin/multiBigwigSummary BED-file \
         --BED {input.merged_peaks_sorted} \
         -b {input.all_norm_bigwig} \
         -o {output.multiBigWig_matrix_atPeaks} \
@@ -953,7 +953,7 @@ rule correlations_atPeaks:
         """
         printf '\033[1;36mPlotting sample correlations (at peaks)...\\n\033[0m'
 
-        plotCorrelation \
+        $CONDA_PREFIX/bin/plotCorrelation \
         -in {input.multiBigWig_matrix_atPeaks} \
         --labels {params.labels} \
         --corMethod pearson \
@@ -966,7 +966,7 @@ rule correlations_atPeaks:
         --colorMap {params.heatmap_color} > {log.out_pearson} 2> {log.err_pearson}
 
 
-        plotCorrelation \
+        $CONDA_PREFIX/bin/plotCorrelation \
         -in {input.multiBigWig_matrix_atPeaks} \
         --labels {params.labels} \
         --corMethod spearman \
@@ -1001,14 +1001,14 @@ rule PCA_atPeaks:
         """
         printf '\033[1;36mPlotting PCA (at peaks)...\\n\033[0m'
 
-        plotPCA \
+        $CONDA_PREFIX/bin/plotPCA \
         -in {input.multiBigWig_matrix_atPeaks} \
         --labels {params.labels} \
         --PCs 1 2 \
         --plotTitle 'PCA at peaks: PC1 vs PC2 (RPGC normalized coverage)' \
         --plotFile {output.PCA_atPeaks_12} > {log.out_12} 2> {log.err_12}
 
-        plotPCA \
+        $CONDA_PREFIX/bin/plotPCA \
         -in {input.multiBigWig_matrix_atPeaks} \
         --labels {params.labels} \
         --PCs 2 3 \
@@ -1033,7 +1033,7 @@ if ((eval(str(config["paired_end"])) == True)):
             target = "{TARGET}",
             genomeSize = genomeSize
         threads:
-            math.ceil(workflow.cores/len(TARGETNAMES))
+            max(math.floor(workflow.cores/len(TARGETNAMES)), 1)
         shell:
             """
             printf '\033[1;36m{params.target}: computing peak stats...\\n\033[0m'
@@ -1079,7 +1079,7 @@ if ((eval(str(config["paired_end"])) == True)):
             printf '{params.target}\\t'$CALLING_MODE'\\t'$peak_count'\\t'$frip_round'\\t'$genomecov_round'\\n' > {output.qc}
 
 	        # add chr to peak files
-            bedtools subtract -nonamecheck -a $PEAK -b {params.blacklist} | awk '{{if (length($1) <3 && $1 !="MT"){{print "chr"$0}} else {{print $0}} }}' > $PEAK_CHR
+            $CONDA_PREFIX/bin/bedtools subtract -nonamecheck -a $PEAK -b {params.blacklist} | awk '{{if (length($1) <3 && $1 !="MT"){{print "chr"$0}} else {{print $0}} }}' > $PEAK_CHR
 	        """
 
     rule aggregate_FRiP_PE:
@@ -1113,7 +1113,7 @@ else:
             target = "{TARGET}",
             genomeSize = genomeSize
         threads:
-            math.ceil(workflow.cores/len(TARGETNAMES))
+            max(math.floor(workflow.cores/len(TARGETNAMES)), 1)
         shell:
             """
             printf '\033[1;36m{params.target}: computing peak stats...\\n\033[0m'
@@ -1159,7 +1159,7 @@ else:
             printf '{params.target}\\t'$CALLING_MODE'\\t'$peak_count'\\t'$frip_round'\\t'$genomecov_round'\\n' > {output.qc}
 
 	        # add chr to peak files
-            bedtools subtract -nonamecheck -a $PEAK -b {params.blacklist} | awk '{{if (length($1) <3 && $1 !="MT"){{print "chr"$0}} else {{print $0}} }}' > $PEAK_CHR
+            $CONDA_PREFIX/bin/bedtools subtract -nonamecheck -a $PEAK -b {params.blacklist} | awk '{{if (length($1) <3 && $1 !="MT"){{print "chr"$0}} else {{print $0}} }}' > $PEAK_CHR
 	        """
 
     rule aggregate_FRiP_SE:

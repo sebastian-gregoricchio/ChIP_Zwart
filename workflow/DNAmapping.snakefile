@@ -158,7 +158,7 @@ if paired:
             printf '\033[1;36m{params.sample}: reads trimming...\\n\033[0m'
             mkdir -p 01_trimmed_fastq/logs/
 
-            cutadapt \
+            ${{CONDA_PREFIX}}/bin/cutadapt \
             -j {threads} -e 0.1 -q 16 -O 3 --trim-n --minimum-length 25 \
             -a {params.fw_adapter_sequence} -A {params.rv_adapter_sequence} {params.opts} \
             -o {output.R1_trimm} -p {output.R2_trimm} {input.R1} {input.R2} > {log.out} 2> {log.err}
@@ -184,7 +184,7 @@ else:
             printf '\033[1;36m{params.sample}: reads trimming...\\n\033[0m'
             mkdir -p 01_trimmed_fastq/logs
 
-            cutadapt \
+            $CONDA_PREFIX/bin/cutadapt \
             -j {threads} -e 0.1 -q 16 -O 3 --trim-n --minimum-length 25 \
             -a {params.fw_adapter_sequence} {params.opts} \
             -o {output.R1_trimm} {input.R1} > {log.out} 2> {log.err}
@@ -234,9 +234,9 @@ if (paired & (eval(str(config["umi_present"])) == True)):
         	    }}
               print $0 u
             }}' |
-	          samtools fixmate -m - - |
-            samtools sort -m 2G -T 02_BAM/{params.sample} -@ {threads} -O bam - > {output.bam} 2> {log.out};
-            samtools flagstat {output.bam} > {output.align_summary}
+	          $CONDA_PREFIX/bin/samtools fixmate -m - - |
+            $CONDA_PREFIX/bin/samtools sort -m 2G -T 02_BAM/{params.sample} -@ {threads} -O bam - > {output.bam} 2> {log.out};
+            $CONDA_PREFIX/bin/samtools flagstat {output.bam} > {output.align_summary}
             """
 
 elif (paired & (eval(str(config["umi_present"])) == False)):
@@ -265,9 +265,9 @@ elif (paired & (eval(str(config["umi_present"])) == False)):
             ${{CONDA_PREFIX}}/bin/{params.bwa} mem \
             -t {threads} \
             -M {params.genome_fasta} {input.R1_trimm} {input.R2_trimm} |
-	          samtools fixmate -m - - |
-            samtools sort -m 2G -T 02_BAM/{params.sample} -@ {threads} -O bam - > {output.bam} 2> {log.out};
-            samtools flagstat {output.bam} > {output.align_summary}
+	          $CONDA_PREFIX/bin/samtools fixmate -m - - |
+            $CONDA_PREFIX/bin/samtools sort -m 2G -T 02_BAM/{params.sample} -@ {threads} -O bam - > {output.bam} 2> {log.out};
+            $CONDA_PREFIX/bin/samtools flagstat {output.bam} > {output.align_summary}
             """
 
 else:
@@ -313,10 +313,10 @@ rule MAPQ_filter:
         """
         printf '\033[1;36m{params.sample}: filtering MAPQ and re-indexing...\\n\033[0m'
 
-        samtools view -@ {threads} -h -q {params.MAPQ_threshold} {input.source_bam} -o {output.bam_mapq_only}
+        $CONDA_PREFIX/bin/samtools view -@ {threads} -h -q {params.MAPQ_threshold} {input.source_bam} -o {output.bam_mapq_only}
 
-        samtools sort -@ {threads} {output.bam_mapq_only} -o {output.bam_mapq_only_sorted}
-        samtools index -@ {threads} -b {output.bam_mapq_only_sorted} {output.bam_mapq_only_sorted_index}
+        $CONDA_PREFIX/bin/samtools sort -@ {threads} {output.bam_mapq_only} -o {output.bam_mapq_only_sorted}
+        $CONDA_PREFIX/bin/samtools index -@ {threads} -b {output.bam_mapq_only_sorted} {output.bam_mapq_only_sorted_index}
         """
 
 
@@ -348,7 +348,7 @@ if ((eval(str(config["paired_end"])) == True) & (eval(str(config["umi_present"])
             mkdir -p 02_BAM/MarkDuplicates_logs
             mkdir -p 02_BAM/flagstat
 
-            gatk UmiAwareMarkDuplicatesWithMateCigar \
+            $CONDA_PREFIX/bin/gatk UmiAwareMarkDuplicatesWithMateCigar \
             --INPUT {input.bam_mapq_only_sorted} \
             --OUTPUT {output.bam_mdup} \
             --REMOVE_DUPLICATES {params.remove_duplicates} \
@@ -359,7 +359,7 @@ if ((eval(str(config["paired_end"])) == True) & (eval(str(config["umi_present"])
             --CREATE_INDEX true \
             --METRICS_FILE {output.dup_metrics} 2> {log.out} > {log.err}
 
-            samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
+            $CONDA_PREFIX/bin/samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
             """
 else: # Single-end/no-UMI dedup
     rule gatk4_markdups:
@@ -387,7 +387,7 @@ else: # Single-end/no-UMI dedup
             mkdir -p 02_BAM/MarkDuplicates_logs
             mkdir -p 02_BAM/flagstat
 
-            gatk MarkDuplicatesWithMateCigar \
+            $CONDA_PREFIX/bin/gatk MarkDuplicatesWithMateCigar \
             --INPUT {input.bam_mapq_only_sorted} \
             --OUTPUT {output.bam_mdup} \
             --REMOVE_DUPLICATES {params.remove_duplicates} \
@@ -395,7 +395,7 @@ else: # Single-end/no-UMI dedup
             --CREATE_INDEX true \
             --METRICS_FILE {output.dup_metrics} 2> {log.out} > {log.err}
 
-            samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
+            $CONDA_PREFIX/bin/samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
             """
 
 
@@ -441,7 +441,7 @@ rule fastQC_trimmed_fastq:
         printf '\033[1;36mPerforming fastQC on trimmed fastq...\\n\033[0m'
 
         mkdir -p 03_quality_controls/trimmed_fastq_fastqc
-        fastqc -t {threads} --outdir 03_quality_controls/trimmed_fastq_fastqc 01_trimmed_fastq/*_trimmed.fastq.gz
+        $CONDA_PREFIX/bin/fastqc -t {threads} --outdir 03_quality_controls/trimmed_fastq_fastqc 01_trimmed_fastq/*_trimmed.fastq.gz
         """
 
 
