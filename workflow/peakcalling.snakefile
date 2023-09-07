@@ -3,10 +3,10 @@
 #####################################
 
 import os
-conda_prefix = str(os.environ["CONDA_PREFIX"])
+#conda_prefix = str(os.environ["CONDA_PREFIX"])
 
 import sys
-sys.path.insert(1, conda_prefix+"/lib/python"+str(sys.version_info[0])+"."+str(sys.version_info[1])+"/site-packages")
+#sys.path.insert(1, conda_prefix+"/lib/python"+str(sys.version_info[0])+"."+str(sys.version_info[1])+"/site-packages")
 
 from typing import List
 import pathlib
@@ -266,7 +266,7 @@ if (eval(str(config["skip_bam_filtering"])) == False):
                 --CREATE_INDEX true \
                 --METRICS_FILE {output.dup_metrics} 2> {log.out} > {log.err}
 
-                samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
+                $CONDA_PREFIX/bin/samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
                 """
     else: # Single-end/no-UMI dedup
         rule gatk4_markdups:
@@ -1057,11 +1057,11 @@ if ((eval(str(config["paired_end"])) == True)):
             peak_count=$(wc -l < $PEAK)
 
             # get the number of mapped reads
-            mapped_reads=$(samtools view -c -F 4 {input.target_bam})
+            mapped_reads=$($CONDA_PREFIX/bin/samtools view -c -F 4 {input.target_bam})
 
             # calculate the number of alignments overlapping the peaks
             # exclude reads flagged as unmapped (unmapped reads will be reported when using -L)
-            reads_in_peaks=$(samtools view -@ {threads} -c -F 4 -L $PEAK {input.target_bam})
+            reads_in_peaks=$($CONDA_PREFIX/bin/samtools view -@ {threads} -c -F 4 -L $PEAK {input.target_bam})
 
             # calculate Fraction of Reads In Peaks
             frip=$(bc -l <<< "$reads_in_peaks/$mapped_reads")
@@ -1137,11 +1137,11 @@ else:
             peak_count=$(wc -l < $PEAK)
 
             # get the number of mapped reads
-            mapped_reads=$(samtools view -c -F 4 {input.target_bam})
+            mapped_reads=$($CONDA_PREFIX/bin/samtools view -c -F 4 {input.target_bam})
 
             # calculate the number of alignments overlapping the peaks
             # exclude reads flagged as unmapped (unmapped reads will be reported when using -L)
-            reads_in_peaks=$(samtools view -@ {threads} -c -F 4 -L $PEAK {input.target_bam})
+            reads_in_peaks=$($CONDA_PREFIX/bin/samtools view -@ {threads} -c -F 4 -L $PEAK {input.target_bam})
 
             # calculate Fraction of Reads In Peaks
             frip=$(bc -l <<< "$reads_in_peaks/$mapped_reads")

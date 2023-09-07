@@ -3,10 +3,10 @@
 #####################################
 
 import os
-conda_prefix = str(os.environ["CONDA_PREFIX"])
+#conda_prefix = str(os.environ["CONDA_PREFIX"])
 
 import sys
-sys.path.insert(1, conda_prefix+"/lib/python"+str(sys.version_info[0])+"."+str(sys.version_info[1])+"/site-packages")
+#sys.path.insert(1, conda_prefix+"/lib/python"+str(sys.version_info[0])+"."+str(sys.version_info[1])+"/site-packages")
 
 from typing import List
 import pathlib
