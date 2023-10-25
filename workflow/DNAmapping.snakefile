@@ -357,6 +357,7 @@ if ((eval(str(config["paired_end"])) == True) & (eval(str(config["umi_present"])
             --OPTICAL_DUPLICATE_PIXEL_DISTANCE 2500 \
             --UMI_TAG_NAME RX \
             --CREATE_INDEX true \
+            --VALIDATION_STRINGENCY STRICT \
             --METRICS_FILE {output.dup_metrics} 2> {log.out} > {log.err}
 
             $CONDA_PREFIX/bin/samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
@@ -393,6 +394,7 @@ else: # Single-end/no-UMI dedup
             --REMOVE_DUPLICATES {params.remove_duplicates} \
             --OPTICAL_DUPLICATE_PIXEL_DISTANCE 2500 \
             --CREATE_INDEX true \
+            --VALIDATION_STRINGENCY LENIENT \
             --METRICS_FILE {output.dup_metrics} 2> {log.out} > {log.err}
 
             $CONDA_PREFIX/bin/samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}

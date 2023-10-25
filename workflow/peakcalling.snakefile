@@ -264,6 +264,7 @@ if (eval(str(config["skip_bam_filtering"])) == False):
                 --OPTICAL_DUPLICATE_PIXEL_DISTANCE 2500 \
                 --UMI_TAG_NAME RX \
                 --CREATE_INDEX true \
+                --VALIDATION_STRINGENCY STRICT \
                 --METRICS_FILE {output.dup_metrics} 2> {log.out} > {log.err}
 
                 $CONDA_PREFIX/bin/samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
@@ -300,6 +301,7 @@ if (eval(str(config["skip_bam_filtering"])) == False):
                 --REMOVE_DUPLICATES {params.remove_duplicates} \
                 --OPTICAL_DUPLICATE_PIXEL_DISTANCE 2500 \
                 --CREATE_INDEX true \
+                --VALIDATION_STRINGENCY LENIENT \
                 --METRICS_FILE {output.dup_metrics} 2> {log.out} > {log.err}
 
                 $CONDA_PREFIX/bin/samtools flagstat -@ {threads} {output.bam_mdup} > {output.flagstat_filtered}
@@ -853,7 +855,7 @@ if ((eval(str(config["paired_end"])) == True)):
 
             mkdir -p 05_Quality_controls_and_statistics/sample_comparisons_atPeaks/
 
-            PEAK_LIST=$(ls 04_Called_peaks/*Peak | grep -v gapped)
+            PEAK_LIST=$(ls 04_Called_peaks/*_peaks.*Peak | grep -v gapped)
 
             for i in ${{PEAK_LIST}}
             do
@@ -884,7 +886,7 @@ else:
 
             mkdir -p 05_Quality_controls_and_statistics/sample_comparisons_atPeaks/
 
-            PEAK_LIST=$(ls 04_Called_peaks/*Peak | grep -v gapped)
+            PEAK_LIST=$(ls 04_Called_peaks/*_peaks.*Peak | grep -v gapped)
 
             for i in ${{PEAK_LIST}}
             do
