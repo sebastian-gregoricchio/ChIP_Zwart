@@ -6,7 +6,7 @@
 ![visits](https://badges.pufler.dev/visits/sebastian-gregoricchio/ChIP_Zwart) --->
 
 # ChIP-seq for Zwartlab
-
+[<img src="https://raw.githubusercontent.com/sebastian-gregoricchio/sebastian-gregoricchio.github.io/main/generic_resources/documentation.svg" align="right" height = 150/>](https://github.com/sebastian-gregoricchio/ChIP_Zwart/wiki)
 <hr style="border:2px">
 
 1. [Introduction](#intro)
