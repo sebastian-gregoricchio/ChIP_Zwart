@@ -1,7 +1,9 @@
 #####################################################
 ## Snakefile for ChIP peak calling - WITHOUT INPUT ##
 #####################################################
-## For the sample configuration file, just repeat the target column in the input column and run the pipeline as usual
+### For the sample configuration file, just repeat the target column in the input column
+### Then run the pipeline as usual, just change the snakefile (`-s` option).
+#####################################################
 
 import os
 #conda_prefix = str(os.environ["CONDA_PREFIX"])
