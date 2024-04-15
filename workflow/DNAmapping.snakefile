@@ -168,7 +168,7 @@ else:
         input:
             R1 = os.path.join(config["fastq_directory"], "".join(["{SAMPLE}", config['read_suffix'][0], config['fastq_suffix']]))
         output:
-            R1_trimm = os.path.join("01_trimmed_fastq", "".join(["{SAMPLE}", config['read_suffix'][0], "_trimmed", config['fastq_suffix']]))
+            R1_trimm = os.path.join("01_trimmed_fastq", "".join(["{SAMPLE}", config['read_suffix'][0], "_trimmed.fastq.gz"]))
         params:
             sample = "{SAMPLE}",
             opts = str(config["cutadapt_trimm_options"]),
