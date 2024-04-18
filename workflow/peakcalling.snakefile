@@ -127,16 +127,16 @@ else:
 
 
 if (len(SAMPLENAMES) > 1):
-    correlation_heatmap_wholeGenome_pearson = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_pearson.correlation_heatmap_wholeGenome.pdf"
-    correlation_heatmap_wholeGenome_spearman = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_spearman.correlation_heatmap_wholeGenome.pdf"
+    correlation_heatmap_wholeGenome_pearson = expand("05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_pearson.correlation_heatmap_wholeGenome.{ext}", ext = [".pdf", ".txt"])
+    correlation_heatmap_wholeGenome_spearman = expand("05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_spearman.correlation_heatmap_wholeGenome.{ext}", ext = [".pdf", ".txt"])
 else:
     correlation_heatmap_wholeGenome_pearson = []
     correlation_heatmap_wholeGenome_spearman = []
 
 
 if (len(TARGETNAMES) > 1):
-    correlation_heatmap_atPeaks_pearson = "05_Quality_controls_and_statistics/sample_comparisons_atPeaks/sample_pearson.correlation_heatmap_atPeaks.pdf"
-    correlation_heatmap_atPeaks_spearman = "05_Quality_controls_and_statistics/sample_comparisons_atPeaks/sample_spearman.correlation_heatmap_atPeaks.pdf"
+    correlation_heatmap_atPeaks_pearson = expand("05_Quality_controls_and_statistics/sample_comparisons_atPeaks/sample_pearson.correlation_heatmap_atPeaks.{ext}", ext = [".pdf", ".txt"])
+    correlation_heatmap_atPeaks_spearman = expand("05_Quality_controls_and_statistics/sample_comparisons_atPeaks/sample_spearman.correlation_heatmap_atPeaks.{ext}", ext = [".pdf", ".txt"])
 else:
     correlation_heatmap_atPeaks_pearson = []
     correlation_heatmap_atPeaks_spearman = []
@@ -547,7 +547,9 @@ rule correlations_wholeGenome:
         multiBigWig_matrix_wholeGenome = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/multiBigWigSummary_matrix_wholeGenome.npz"
     output:
         correlation_heatmap_wholeGenome_pearson = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_pearson.correlation_heatmap_wholeGenome.pdf",
-        correlation_heatmap_wholeGenome_spearman = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_spearman.correlation_heatmap_wholeGenome.pdf"
+        correlation_heatmap_wholeGenome_pearson_tb = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_pearson.correlation_heatmap_wholeGenome.txt",
+        correlation_heatmap_wholeGenome_spearman = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_spearman.correlation_heatmap_wholeGenome.pdf",
+        correlation_heatmap_wholeGenome_spearman_tb = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_spearman.correlation_heatmap_wholeGenome.txt"
     params:
         labels = ' '.join(SAMPLENAMES),
         blacklist = blacklist,
@@ -573,6 +575,7 @@ rule correlations_wholeGenome:
         --removeOutliers \
         --plotTitle 'Pearson correlation whole genome RPGC normalized coverage' \
         --plotFile {output.correlation_heatmap_wholeGenome_pearson} \
+        --outFileCorMatrix {output.correlation_heatmap_wholeGenome_pearson_tb} \
         --colorMap {params.heatmap_color} > {log.out_pearson} 2> {log.err_pearson}
 
 
@@ -586,6 +589,7 @@ rule correlations_wholeGenome:
         --removeOutliers \
         --plotTitle 'Spearman correlation whole genome RPGC normalized coverage' \
         --plotFile {output.correlation_heatmap_wholeGenome_spearman} \
+        --outFileCorMatrix {output.correlation_heatmap_wholeGenome_spearman_tb} \
         --colorMap {params.heatmap_color} > {log.out_spearman} 2> {log.err_spearman}
         """
 
@@ -939,7 +943,9 @@ rule correlations_atPeaks:
         multiBigWig_matrix_atPeaks = "05_Quality_controls_and_statistics/sample_comparisons_atPeaks/multiBigWigSummary_matrix_atPeaks.npz"
     output:
         correlation_heatmap_atPeaks_pearson = "05_Quality_controls_and_statistics/sample_comparisons_atPeaks/sample_pearson.correlation_heatmap_atPeaks.pdf",
-        correlation_heatmap_atPeaks_spearman = "05_Quality_controls_and_statistics/sample_comparisons_atPeaks/sample_spearman.correlation_heatmap_atPeaks.pdf"
+        correlation_heatmap_atPeaks_pearson_tb = "05_Quality_controls_and_statistics/sample_comparisons_atPeaks/sample_pearson.correlation_heatmap_atPeaks.txt",
+        correlation_heatmap_atPeaks_spearman = "05_Quality_controls_and_statistics/sample_comparisons_atPeaks/sample_spearman.correlation_heatmap_atPeaks.pdf",
+        correlation_heatmap_atPeaks_spearman_tb = "05_Quality_controls_and_statistics/sample_comparisons_atPeaks/sample_spearman.correlation_heatmap_atPeaks.txt"
     params:
         labels = ' '.join(TARGETNAMES),
         blacklist = blacklist,
@@ -965,6 +971,7 @@ rule correlations_atPeaks:
         --removeOutliers \
         --plotTitle 'Pearson correlation at peaks RPGC normalized coverage' \
         --plotFile {output.correlation_heatmap_atPeaks_pearson} \
+        --outFileCorMatrix {output.correlation_heatmap_atPeaks_pearson_tb} \
         --colorMap {params.heatmap_color} > {log.out_pearson} 2> {log.err_pearson}
 
 
@@ -978,6 +985,7 @@ rule correlations_atPeaks:
         --removeOutliers \
         --plotTitle 'Spearman correlation at peaks RPGC normalized coverage' \
         --plotFile {output.correlation_heatmap_atPeaks_spearman} \
+        --outFileCorMatrix {output.correlation_heatmap_atPeaks_spearman_tb} \
         --colorMap {params.heatmap_color} > {log.out_spearman} 2> {log.err_spearman}
         """
 
