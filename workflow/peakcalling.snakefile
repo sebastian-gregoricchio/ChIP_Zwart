@@ -127,16 +127,16 @@ else:
 
 
 if (len(SAMPLENAMES) > 1):
-    correlation_heatmap_wholeGenome_pearson = expand("05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_pearson.correlation_heatmap_wholeGenome.{ext}", ext = [".pdf", ".txt"])
-    correlation_heatmap_wholeGenome_spearman = expand("05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_spearman.correlation_heatmap_wholeGenome.{ext}", ext = [".pdf", ".txt"])
+    correlation_heatmap_wholeGenome_pearson = expand("05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_pearson.correlation_heatmap_wholeGenome.{ext}", ext = ["pdf", "txt"])
+    correlation_heatmap_wholeGenome_spearman = expand("05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_spearman.correlation_heatmap_wholeGenome.{ext}", ext = ["pdf", "txt"])
 else:
     correlation_heatmap_wholeGenome_pearson = []
     correlation_heatmap_wholeGenome_spearman = []
 
 
 if (len(TARGETNAMES) > 1):
-    correlation_heatmap_atPeaks_pearson = expand("05_Quality_controls_and_statistics/sample_comparisons_atPeaks/sample_pearson.correlation_heatmap_atPeaks.{ext}", ext = [".pdf", ".txt"])
-    correlation_heatmap_atPeaks_spearman = expand("05_Quality_controls_and_statistics/sample_comparisons_atPeaks/sample_spearman.correlation_heatmap_atPeaks.{ext}", ext = [".pdf", ".txt"])
+    correlation_heatmap_atPeaks_pearson = expand("05_Quality_controls_and_statistics/sample_comparisons_atPeaks/sample_pearson.correlation_heatmap_atPeaks.{ext}", ext = ["pdf", "txt"])
+    correlation_heatmap_atPeaks_spearman = expand("05_Quality_controls_and_statistics/sample_comparisons_atPeaks/sample_spearman.correlation_heatmap_atPeaks.{ext}", ext = ["pdf", "txt"])
 else:
     correlation_heatmap_atPeaks_pearson = []
     correlation_heatmap_atPeaks_spearman = []
