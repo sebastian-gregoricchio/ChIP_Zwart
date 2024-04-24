@@ -552,7 +552,7 @@ rule correlations_wholeGenome:
         correlation_heatmap_wholeGenome_pearson = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_pearson.correlation_heatmap_wholeGenome.pdf",
         correlation_heatmap_wholeGenome_pearson_tb = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_pearson.correlation_heatmap_wholeGenome.txt",
         correlation_heatmap_wholeGenome_spearman = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_spearman.correlation_heatmap_wholeGenome.pdf",
-        correlation_heatmap_wholeGenome_spearman_tb = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_spearman.correlation_heatmap_wholeGenome.pdf"
+        correlation_heatmap_wholeGenome_spearman_tb = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/sample_spearman.correlation_heatmap_wholeGenome.txt"
     params:
         labels = ' '.join(SAMPLENAMES),
         blacklist = blacklist,
