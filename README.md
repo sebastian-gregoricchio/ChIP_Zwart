@@ -184,7 +184,7 @@ Hereafter there are some details of additional parameters available in the `conf
 |------------:|:----------------|
 | *umi_present* | Default: `True`. True/False to indicate whether the data contain UMIs (ignored for single-end data). |
 | *fastq_suffix* | Default: `".fastq.gz"`. String with the suffix of the source fastq files. |
-| *read_suffix* | Default: `['_R1', '_R2']`. A python-formatted list with two strings containing the suffix used to indicate read1 and read2 respectively. In the case of single end reads, only the first value will be read. If your single data do not have any read-prefix set this parameter to: `['', '']` (blank). |
+| *read_suffix* | Default: `['_R1','_R2']`. A python-formatted list with two strings containing the suffix used to indicate read1 and read2 respectively. In the case of single end reads, only the first value will be read. If your single data do not have any read-prefix set this parameter to: `['', '']` (blank). |
 | *cutadapt_trimm_options* | Default: `''` (blank). String indicating additional user-specific values to pass to cutadapt. |
 | *fw_adapter_sequence* | Default: `"AGATCGGAAGAGC"`. Sequence of the adapter1 (flag `-a` of cutadapt). |
 | *rv_adapter_sequence* | Default: `"AGATCGGAAGAGC"`. Sequence of the adapter2 (flag `-A` of cutadapt). |
