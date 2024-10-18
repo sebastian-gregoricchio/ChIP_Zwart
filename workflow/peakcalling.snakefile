@@ -380,7 +380,7 @@ rule plotFingerprint:
         mkdir -p 05_Quality_controls_and_statistics/plotFingerprint/logs
         mkdir -p 05_Quality_controls_and_statistics/plotFingerprint/quality_metrics
 
-        INPUT_ID=$(grep {params.sample} {params.sample_config_table} | cut -f 2)
+        INPUT_ID=$(grep -w {params.sample} {params.sample_config_table} | cut -f 2)
 
         $CONDA_PREFIX/bin/plotFingerprint \
         -b {input.target_bam} \
@@ -661,8 +661,8 @@ if ((eval(str(config["paired_end"])) == True)):
 
             mkdir -p 04_Called_peaks/logs
 
-            INPUT_ID=$(grep {params.sample} {params.sample_config_table} | cut -f 2)
-            CALL_BROAD=$(grep {params.sample} {params.sample_config_table} | cut -f 3 | sed -e 's/\\(.*\\)/\\L\\1/')
+            INPUT_ID=$(grep -w {params.sample} {params.sample_config_table} | cut -f 2)
+            CALL_BROAD=$(grep -w {params.sample} {params.sample_config_table} | cut -f 3 | sed -e 's/\\(.*\\)/\\L\\1/')
 
             if [ $CALL_BROAD == "false" ]; then
                 BROAD=""
@@ -704,7 +704,7 @@ else:
             printf '\033[1;36m{params.sample}: calculating phantom peak...\\n\033[0m'
             mkdir -p 04_Called_peaks/phantom/logs
 
-            INPUT_ID=$(grep {params.sample} {params.sample_config_table} | cut -f 2)
+            INPUT_ID=$(grep -w {params.sample} {params.sample_config_table} | cut -f 2)
 
             ${{CONDA_PREFIX}}/bin/Rscript ${{CONDA_PREFIX}}/bin/run_spp.R -rf -c='{input.target_bam}' -i="01_BAM_filtered/${{INPUT_ID}}{params.input_suffix}" -savp -out={output.phantom} &> {log.out}
             """
@@ -750,8 +750,8 @@ else:
 
             mkdir -p 04_Called_peaks/logs
 
-            INPUT_ID=$(grep {params.sample} {params.sample_config_table} | cut -f 2)
-            CALL_BROAD=$(grep {params.sample} {params.sample_config_table} | cut -f 3 | sed -e 's/\\(.*\\)/\\L\\1/')
+            INPUT_ID=$(grep -w {params.sample} {params.sample_config_table} | cut -f 2)
+            CALL_BROAD=$(grep -w {params.sample} {params.sample_config_table} | cut -f 3 | sed -e 's/\\(.*\\)/\\L\\1/')
 
             if [ $CALL_BROAD == "false" ]; then
                 BROAD=""
@@ -1051,7 +1051,7 @@ if ((eval(str(config["paired_end"])) == True)):
             mkdir -p 05_Quality_controls_and_statistics/peaks_stats/
 
             # define peak file
-            CALL_BROAD=$(grep {params.target} {params.sample_config_table} | cut -f 3 | sed -e 's/\\(.*\\)/\\L\\1/')
+            CALL_BROAD=$(grep -w {params.target} {params.sample_config_table} | cut -f 3 | sed -e 's/\\(.*\\)/\\L\\1/')
 
             if [ $CALL_BROAD == "false" ]; then
                 CALLING_MODE="narrow"
@@ -1131,7 +1131,7 @@ else:
             mkdir -p 05_Quality_controls_and_statistics/peaks_stats/
 
             # define peak file
-            CALL_BROAD=$(grep {params.target} {params.sample_config_table} | cut -f 3 | sed -e 's/\\(.*\\)/\\L\\1/')
+            CALL_BROAD=$(grep -w {params.target} {params.sample_config_table} | cut -f 3 | sed -e 's/\\(.*\\)/\\L\\1/')
 
             if [ $CALL_BROAD == "false" ]; then
                 CALLING_MODE="narrow"
