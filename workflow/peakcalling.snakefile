@@ -514,7 +514,8 @@ rule multiBigwigSummary_wholeGenome:
     input:
         all_norm_bigwig = expand(os.path.join("03_bigWig_bamCoverage/RPGC_normalized/", ''.join(["{sample}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_RPGC.normalized_bs", str(config["bigWig_binSize"]), ".bw"])), sample = SAMPLENAMES),
     output:
-        multiBigWig_matrix_wholeGenome = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/multiBigWigSummary_matrix_wholeGenome.npz"
+        multiBigWig_matrix_wholeGenome = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/multiBigWigSummary_matrix_wholeGenome.npz",
+        multiBigWig_matrix_wholeGenome_raw = "05_Quality_controls_and_statistics/sample_comparisons_wholeGenome/multiBigWigSummary_matrix_wholeGenome.txt"
     params:
         labels = ' '.join(SAMPLENAMES),
         blacklist = blacklist,
@@ -533,6 +534,7 @@ rule multiBigwigSummary_wholeGenome:
         $CONDA_PREFIX/bin/multiBigwigSummary bins \
         -b {input.all_norm_bigwig} \
         -o {output.multiBigWig_matrix_wholeGenome} \
+        --outRawCounts {output.multiBigWig_matrix_wholeGenome_raw} \
         --labels {params.labels} \
         --binSize 1000 \
         --chromosomesToSkip {params.ignore_for_normalization} \
@@ -909,7 +911,8 @@ rule multiBigwigSummary_atPeaks:
         all_norm_bigwig = expand(os.path.join("03_bigWig_bamCoverage/RPGC_normalized/", ''.join(["{target}_mapq", str(config["MAPQ_threshold"]), "_", DUP, "_RPGC.normalized_bs", str(config["bigWig_binSize"]), ".bw"])), target = TARGETNAMES),
         merged_peaks_sorted = "05_Quality_controls_and_statistics/sample_comparisons_atPeaks/all_peaks_merged_sorted.bed"
     output:
-        multiBigWig_matrix_atPeaks = "05_Quality_controls_and_statistics/sample_comparisons_atPeaks/multiBigWigSummary_matrix_atPeaks.npz"
+        multiBigWig_matrix_atPeaks = "05_Quality_controls_and_statistics/sample_comparisons_atPeaks/multiBigWigSummary_matrix_atPeaks.npz",
+        multiBigWig_matrix_atPeaks_raw = "05_Quality_controls_and_statistics/sample_comparisons_atPeaks/multiBigWigSummary_matrix_atPeaks.txt"
     params:
         labels = ' '.join(TARGETNAMES),
         blacklist = blacklist,
@@ -929,6 +932,7 @@ rule multiBigwigSummary_atPeaks:
         --BED {input.merged_peaks_sorted} \
         -b {input.all_norm_bigwig} \
         -o {output.multiBigWig_matrix_atPeaks} \
+        --outRawCounts {output.multiBigWig_matrix_atPeaks_raw} \
         --labels {params.labels} \
         --binSize 1000 \
         --chromosomesToSkip {params.ignore_for_normalization} \
