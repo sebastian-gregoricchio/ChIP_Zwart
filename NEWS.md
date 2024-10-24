@@ -6,6 +6,11 @@ title: "changeLog"
 [![forks](https://img.shields.io/github/forks/sebastian-gregoricchio/ChIP_Zwart?style=social)](https://github.com/sebastian-gregoricchio/ChIP_Zwart/fork)
 
 
+#### [v0.1.3](https://github.com/sebastian-gregoricchio/ChIP_Zwart/releases/tag/0.1.3) - October 24<sup>th</sup> 2024
+* Bug fixing for pattern detection of sample names in the peak calling analyses
+* Added feature to get the counts from multiBigWigSummary also in tab format
+
+
 #### [v0.1.2](https://github.com/sebastian-gregoricchio/ChIP_Zwart/releases/tag/0.1.2) - September 7<sup>th</sup> 2023
 * Optimization of the threads management in the workflow snakefiles
 * Adding a comment for eventual bug fixing for the path to use to load python modules in the snakemake (workflow) files
