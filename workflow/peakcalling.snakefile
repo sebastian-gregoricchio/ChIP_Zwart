@@ -295,7 +295,7 @@ if (eval(str(config["skip_bam_filtering"])) == False):
                 mkdir -p 01_BAM_filtered/MarkDuplicates_logs
                 mkdir -p 01_BAM_filtered/flagstat
 
-                $CONDA_PREFIX/bin/gatk MarkDuplicatesWithMateCigar \
+                $CONDA_PREFIX/bin/gatk MarkDuplicates \
                 --INPUT {input.bam_mapq_only_sorted} \
                 --OUTPUT {output.bam_mdup} \
                 --REMOVE_DUPLICATES {params.remove_duplicates} \
@@ -761,6 +761,12 @@ else:
                 BROAD="--broad"
             fi
 
+            EXTSIZEPHANTOM=$(cat {input.phantom}) ${{BROAD}}
+
+            if [ "$EXTSIZEPHANTOM" -lt 1 ]; then
+              EXTSIZEPHANTOM=200
+            fi
+
             $CONDA_PREFIX/bin/{params.macs_version} callpeak \
             -t {input.target_bam} \
             -c 01_BAM_filtered/${{INPUT_ID}}{params.input_suffix} \
@@ -770,7 +776,7 @@ else:
             -q {params.macs_qValue_cutoff} \
             --outdir 04_Called_peaks \
             --name {params.sample}.filtered.BAM \
-            --extsize $(cat {input.phantom}) ${{BROAD}} > {log.err} 2> {log.out}
+            --extsize $EXTSIZEPHANTOM > {log.err} 2> {log.out}
             """
 
 # ------------------------------------------------------------------------------
