@@ -6,6 +6,11 @@ title: "changeLog"
 [![forks](https://img.shields.io/github/forks/sebastian-gregoricchio/ChIP_Zwart?style=social)](https://github.com/sebastian-gregoricchio/ChIP_Zwart/fork)
 
 
+#### [v0.1.4](https://github.com/sebastian-gregoricchio/ChIP_Zwart/releases/tag/0.1.4) - June 11<sup>th</sup> 2025
+* Fixing eventual negative values in the phantompeak detection. If the fragment length is negative, then the macs' `--extsize` is set to 200 automatically (default of macs)
+* Removed the `withMateCigar` in gatk markDuplicates for single end data
+
+
 #### [v0.1.3](https://github.com/sebastian-gregoricchio/ChIP_Zwart/releases/tag/0.1.3) - October 24<sup>th</sup> 2024
 * Bug fixing for pattern detection of sample names in the peak calling analyses
 * Added feature to get the counts from multiBigWigSummary also in tab format
